@@ -14,204 +14,7 @@ int iim[256];
 unsigned char dim[1024];
 int temp;
 
-void WB(){
-	op=(unsigned)DM_WB.instruction>>26;
 
-
-
-
-            switch(op)
-            {
-            case 0x00:
-            {
-                funct=cut_func(DM_WB.instruction);
-
-                switch(funct)
-                {
-                case 0x20:	///add
-                {
-
-                    
-                    break;
-                }
-                case 0x21:	///addu
-                {
-                    
-                    break;
-                }
-                case 0x22:	///sub
-                {
-                    
-                    break;
-                }
-                case 0x24:	///and
-                {
-                   
-                    break;
-                }
-                case 0x25:	///or
-                {
-                    
-                    break;
-                }
-                case 0x26:	///xor
-                {
-                    
-                    break;
-                }
-                case 0x27:	///nor
-                {
-                    
-                    break;
-                }
-                case 0x28:	///nand
-                {
-                    
-                    break;
-                }
-                case 0x2A:	///slt
-                {
-                    
-                    break;
-                }
-                case 0x00:	///sll
-                {
-               
-                    break;
-                }
-                case 0x02:	///srl
-                {
-                    
-                    break;
-                }
-                case 0x03:	///sra
-                {
-                    
-                    break;
-                }
-                case 0x08:	///jr
-                {
-
-                    
-                    break;
-                }
-
-                }
-                break;
-            }
-            case 0x08:	///addi
-            {
-
-                
-                break;
-            }
-            case 0x09:	///addiu
-            {
-                
-                break;
-            }
-            case 0x23:	///lw
-            {
-
-                
-                break;
-            }
-            case 0x21:	///lh
-            {
-               
-                break;
-            }
-            case 0x25:	///lhu
-            {
-                
-                break;
-            }
-            case 0x20:	///lb
-            {
-                
-                break;
-            }
-            case 0x24:	///lbu
-            {
-                
-                break;
-            }
-            case 0x2B:	///sw
-            {
-                
-                break;
-            }
-            case 0x29:	///sh
-            {
-                
-                break;
-            }
-            case 0x28:	///sb
-            {
-                
-                break;
-            }
-            case 0x0F:	///lui
-            {
-                
-                break;
-            }
-            case 0x0C:	///andi
-            {
-               
-                break;
-            }
-            case 0x0D:	///ori
-            {
-
-                
-                break;
-            }
-            case 0x0E:	///nori
-            {
-                
-                break;
-            }
-            case 0x0A:	///slti
-            {
-                
-                break;
-            }
-            case 0x04:	///beq
-            {
-               
-                break;
-            }
-            case 0x05:	///bne
-            {
-                
-                break;
-            }
-            case 0x07:	///bgtz
-            {
-               
-                break;
-            }
-            case 0x02:	///j
-            {
-                
-                break;
-            }
-            case 0x03:	///jal
-            {
-               
-                break;
-            }
-            case 0x3F:	///halt
-            {
-                //  printf("halt\n");
-                flag=1;
-                break;
-            }
-
-
-            }
-}
 
 int main(void)
 {
@@ -289,11 +92,19 @@ int main(void)
     sins: int of the number of instruction
     sdata : int of the number of memory (word)
     **/
-	WB();
-	DM();
-	EX();
-	ID();
-	IF();
+	int check[5]={0};
+	while(1)
+	{
+	check[0]=WB();
+	check[1]=DM();
+	check[2]=EX();
+	check[3]=ID();
+	check[4]=IF();
+
+if(check[0]==1 && check[1]==1 && check[2]==1 && check[3]==1 && check[4]==1)	
+	break;
+	}
+	
 
 
     return 0;

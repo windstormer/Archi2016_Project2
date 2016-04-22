@@ -1,8 +1,218 @@
 #include "state.h"
 #include "state_reg.h"
 
-void DM(){
+int WB(){
+	int flag=0;
+	
+	if(DM_WB.instruction==0)	return 0;
+	
+	op=(unsigned)DM_WB.instruction>>26;
+
+
+
+
+            switch(op)
+            {
+            case 0x00:
+            {
+                funct=cut_func(DM_WB.instruction);
+
+                switch(funct)
+                {
+                case 0x20:	///add
+                {
+					reg[DM_WB.write_reg] = DM_WB.address;
+                    
+                    break;
+                }
+                case 0x21:	///addu
+                {
+                    reg[DM_WB.write_reg] = DM_WB.address;
+                    break;
+                }
+                case 0x22:	///sub
+                {
+                    reg[DM_WB.write_reg] = DM_WB.address;
+                    break;
+                }
+                case 0x24:	///and
+                {
+                    reg[DM_WB.write_reg] = DM_WB.address;
+                    break;
+                }
+                case 0x25:	///or
+                {
+                    reg[DM_WB.write_reg] = DM_WB.address;
+                    break;
+                }
+                case 0x26:	///xor
+                {
+                    reg[DM_WB.write_reg] = DM_WB.address;
+                    break;
+                }
+                case 0x27:	///nor
+                {
+                    reg[DM_WB.write_reg] = DM_WB.address;
+                    break;
+                }
+                case 0x28:	///nand
+                {
+                    reg[DM_WB.write_reg] = DM_WB.address;
+                    break;
+                }
+                case 0x2A:	///slt
+                {
+                    reg[DM_WB.write_reg] = DM_WB.address;
+                    break;
+                }
+                case 0x00:	///sll
+                {
+					reg[DM_WB.write_reg] = DM_WB.address;
+                    break;
+                }
+                case 0x02:	///srl
+                {
+                    reg[DM_WB.write_reg] = DM_WB.address;
+                    break;
+                }
+                case 0x03:	///sra
+                {
+                    reg[DM_WB.write_reg] = DM_WB.address;
+                    break;
+                }
+                case 0x08:	///jr
+                {
+
+                    break;
+                }
+
+                }
+                break;
+            }
+            case 0x08:	///addi
+            {
+				reg[DM_WB.write_reg] = DM_WB.address;
+                
+                break;
+            }
+            case 0x09:	///addiu
+            {
+                reg[DM_WB.write_reg] = DM_WB.address;
+                break;
+            }
+            case 0x23:	///lw
+            {
+				reg[DM_WB.write_reg] = DM_WB.data;
+                
+                break;
+            }
+            case 0x21:	///lh
+            {
+                reg[DM_WB.write_reg] = DM_WB.data;
+                break;
+            }
+            case 0x25:	///lhu
+            {
+                reg[DM_WB.write_reg] = DM_WB.data;
+                break;
+            }
+            case 0x20:	///lb
+            {
+                reg[DM_WB.write_reg] = DM_WB.data;
+                break;
+            }
+            case 0x24:	///lbu
+            {
+                reg[DM_WB.write_reg] = DM_WB.data;
+                break;
+            }
+            case 0x2B:	///sw
+            {
+                
+                break;
+            }
+            case 0x29:	///sh
+            {
+                
+                break;
+            }
+            case 0x28:	///sb
+            {
+                
+                break;
+            }
+            case 0x0F:	///lui
+            {
+                reg[DM_WB.write_reg] = DM_WB.address;
+                break;
+            }
+            case 0x0C:	///andi
+            {
+                reg[DM_WB.write_reg] = DM_WB.address;
+                break;
+            }
+            case 0x0D:	///ori
+            {
+				reg[DM_WB.write_reg] = DM_WB.address;
+                break;
+            }
+            case 0x0E:	///nori
+            {
+                reg[DM_WB.write_reg] = DM_WB.address;
+                break;
+            }
+            case 0x0A:	///slti
+            {
+                reg[DM_WB.write_reg] = DM_WB.address;
+                break;
+            }
+            case 0x04:	///beq
+            {
+               
+                break;
+            }
+            case 0x05:	///bne
+            {
+                
+                break;
+            }
+            case 0x07:	///bgtz
+            {
+               
+                break;
+            }
+            case 0x02:	///j
+            {
+                
+                break;
+            }
+            case 0x03:	///jal
+            {
+               
+                break;
+            }
+            case 0x3F:	///halt
+            {
+                
+                flag=1;
+                break;
+            }
+
+
+            }
+			
+			if(flag==1) return 1;
+			else return 0;
+}
+
+int DM(){
 	unsigned char *getting;
+	int flag=0;
+	if(EX_DM.instruction==0)
+	{
+		DM_WB.instruction=0;
+		return 0;
+	}
 
 		op=(unsigned)EX_DM.instruction>>26;
 
@@ -265,7 +475,6 @@ void DM(){
             }
             case 0x3F:	///halt
             {
-                //  printf("halt\n");
 				
                 flag=1;
                 break;
@@ -273,5 +482,6 @@ void DM(){
 
 
             }
-		
+		if(flag==1)return 1;
+		else return 0;
 	}
