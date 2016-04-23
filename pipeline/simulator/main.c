@@ -2,7 +2,6 @@
 #include <string.h>
 #include "function.h"
 #include "state.h"
-#include "state_reg.h"
 
 
 int reg[32];
@@ -27,7 +26,7 @@ int main(void)
 
 
     int sdata=0,sins=0;
-    int i,j;
+    int i;
 
 
     memset(reg,0,sizeof(reg));
@@ -92,7 +91,7 @@ int main(void)
     sins: int of the number of instruction
     sdata : int of the number of memory (word)
     **/
-	int check[5]={0};
+/*	int check[5]={0};
 	while(1)
 	{
 	check[0]=WB();
@@ -101,10 +100,10 @@ int main(void)
 	check[3]=ID();
 	check[4]=IF();
 
-if(check[0]==1 && check[1]==1 && check[2]==1 && check[3]==1 && check[4]==1)	
+if(check[0]==1 && check[1]==1 && check[2]==1 && check[3]==1 && check[4]==1)
 	break;
-	}
-	
+	}*/
+
 
 
     return 0;

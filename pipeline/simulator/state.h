@@ -1,5 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void WB();
-void DM();
+
+int WB();
+int DM();
+int EX();
+int ID();
+int IF();
+
+
+
+
+
+extern int reg[32];
+extern int PC;
+extern int PC_start;
+extern int iim[256];
+extern unsigned char dim[1024];
+
+unsigned char op,funct;

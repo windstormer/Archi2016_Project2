@@ -1,11 +1,51 @@
 #include "state.h"
-#include "state_reg.h"
+
+typedef struct _IFID{
+	int instruction;
+	int PC;
+}IFID;
+
+
+
+typedef struct _IDEX{
+	int instruction;
+	int PC;
+	int read_data1;
+	int read_data2;
+	int immediate_ext;
+	int write_reg;
+}IDEX;
+
+
+
+typedef struct _EXDM{
+	int instruction;
+	int PC;
+	int ALU_result;
+	int read_data2;
+	int write_reg;
+}EXDM;
+
+
+
+typedef struct _DMWB{
+	int instruction;
+	int address;
+	int data;
+	int write_reg;
+}DMWB;
+
+IFID IF_ID;
+IDEX ID_EX;
+EXDM EX_DM;
+DMWB DM_WB;
+
 
 int WB(){
 	int flag=0;
-	
+    op=0,funct=0;
 	if(DM_WB.instruction==0)	return 0;
-	
+
 	op=(unsigned)DM_WB.instruction>>26;
 
 
@@ -22,7 +62,7 @@ int WB(){
                 case 0x20:	///add
                 {
 					reg[DM_WB.write_reg] = DM_WB.address;
-                    
+
                     break;
                 }
                 case 0x21:	///addu
@@ -92,7 +132,7 @@ int WB(){
             case 0x08:	///addi
             {
 				reg[DM_WB.write_reg] = DM_WB.address;
-                
+
                 break;
             }
             case 0x09:	///addiu
@@ -103,7 +143,7 @@ int WB(){
             case 0x23:	///lw
             {
 				reg[DM_WB.write_reg] = DM_WB.data;
-                
+
                 break;
             }
             case 0x21:	///lh
@@ -128,17 +168,17 @@ int WB(){
             }
             case 0x2B:	///sw
             {
-                
+
                 break;
             }
             case 0x29:	///sh
             {
-                
+
                 break;
             }
             case 0x28:	///sb
             {
-                
+
                 break;
             }
             case 0x0F:	///lui
@@ -168,39 +208,39 @@ int WB(){
             }
             case 0x04:	///beq
             {
-               
+
                 break;
             }
             case 0x05:	///bne
             {
-                
+
                 break;
             }
             case 0x07:	///bgtz
             {
-               
+
                 break;
             }
             case 0x02:	///j
             {
-                
+
                 break;
             }
             case 0x03:	///jal
             {
-               
+
                 break;
             }
             case 0x3F:	///halt
             {
-                
+
                 flag=1;
                 break;
             }
 
 
             }
-			
+
 			if(flag==1) return 1;
 			else return 0;
 }
@@ -385,7 +425,7 @@ int DM(){
             }
             case 0x29:	///sh
             {
-				
+
                 DM_WB.address = 0;
 				DM_WB.write_reg = EX_DM.write_reg;
 				getting = seperate_two(EX_DM.read_data2);
@@ -398,6 +438,7 @@ int DM(){
             {
                 DM_WB.address = 0;
 				DM_WB.write_reg = EX_DM.write_reg;
+				getting = malloc(sizeof(unsigned char));
 				getting[0] = (unsigned char)(EX_DM.read_data2&0x000000FF);
 				dim[EX_DM.ALU_result]=getting[0];
 				DM_WB.data = 0;
@@ -475,7 +516,7 @@ int DM(){
             }
             case 0x3F:	///halt
             {
-				
+
                 flag=1;
                 break;
             }
@@ -485,3 +526,20 @@ int DM(){
 		if(flag==1)return 1;
 		else return 0;
 	}
+
+int EX()
+{
+
+    return 1;
+}
+
+int ID()
+{
+
+    return 1;
+}
+
+int IF()
+{
+    return 1;
+}
