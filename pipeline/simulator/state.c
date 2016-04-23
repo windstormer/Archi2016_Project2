@@ -9,7 +9,6 @@ typedef struct _IFID{
 
 typedef struct _IDEX{
 	int instruction;
-	int PC;
 	int read_data1;
 	int read_data2;
 	int immediate_ext;
@@ -20,11 +19,9 @@ typedef struct _IDEX{
 
 typedef struct _EXDM{
 	int instruction;
-	int PC;
 	int ALU_result;
 	int read_data2;
 	int write_reg;
-	int branch;
 }EXDM;
 
 
@@ -552,9 +549,10 @@ int IF(int flags)
     }
     else
     {
-        if(EX_DM.branch==1)
+        if(branch==1)
         {
-          tempPC = EX_DM.PC;
+          tempPC = PCback;
+		  branch=0;
         }else
         tempPC+=4;
 

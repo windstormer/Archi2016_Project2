@@ -9,7 +9,7 @@ int ID();
 int IF(int);
 
 
-
+int PCback,branch;
 
 extern int reg[32];
 extern int PC;
