@@ -15,6 +15,7 @@ int temp;
 
 
 
+
 int main(void)
 {
     FILE *iimage = fopen("./iimage.bin","rb");
@@ -92,13 +93,19 @@ int main(void)
     sdata : int of the number of memory (word)
     **/
 /*	int check[5]={0};
+int flags=0;
 	while(1)
 	{
 	check[0]=WB();
 	check[1]=DM();
 	check[2]=EX();
 	check[3]=ID();
-	check[4]=IF();
+	if(flags==0)
+	{check[4]=IF(0);
+	flags=1;
+	}
+	else
+    check[4]=IF(1);
 
 if(check[0]==1 && check[1]==1 && check[2]==1 && check[3]==1 && check[4]==1)
 	break;

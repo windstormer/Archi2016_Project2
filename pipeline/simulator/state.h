@@ -6,8 +6,7 @@ int WB();
 int DM();
 int EX();
 int ID();
-int IF();
-
+int IF(int);
 
 
 

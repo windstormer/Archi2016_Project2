@@ -24,6 +24,7 @@ typedef struct _EXDM{
 	int ALU_result;
 	int read_data2;
 	int write_reg;
+	int branch;
 }EXDM;
 
 
@@ -539,7 +540,39 @@ int ID()
     return 1;
 }
 
-int IF()
+int IF(int flags)
 {
-    return 1;
+
+    int i=0;
+    int tempPC=0;
+
+    if(flags==0)
+    {
+       tempPC = PC;
+    }
+    else
+    {
+        if(EX_DM.branch==1)
+        {
+          tempPC = EX_DM.PC;
+        }else
+        tempPC+=4;
+
+    }
+
+
+    if(tempPC>=PC_start)
+    {
+        i=(tempPC-PC_start)/4;
+        IF_ID.instruction=iim[i];
+        IF_ID.PC=PC;
+    }else
+    {
+        IF_ID.instruction=0;
+    }
+    op=(unsigned)iim[i]>>26;
+    if(op==0x3F)
+        return 1;
+    else
+        return 0;
 }
