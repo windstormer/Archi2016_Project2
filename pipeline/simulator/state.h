@@ -10,6 +10,7 @@ int IF(int);
 
 
 int PCback,branch;
+int change;
 
 extern int reg[32];
 extern int PC;
