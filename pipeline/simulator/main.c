@@ -92,10 +92,12 @@ int main(void)
     sins: int of the number of instruction
     sdata : int of the number of memory (word)
     **/
-/*	int check[5]={0};
+	int check[5]={0};
 int flags=0;
+int count=0;
 	while(1)
 	{
+	    printf("cycle %d\n",count);
 	check[0]=WB();
 	check[1]=DM();
 	check[2]=EX();
@@ -109,7 +111,9 @@ int flags=0;
 
 if(check[0]==1 && check[1]==1 && check[2]==1 && check[3]==1 && check[4]==1)
 	break;
-	}*/
+
+count++;
+	}
 
 
 
