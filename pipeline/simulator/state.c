@@ -1411,7 +1411,10 @@ int IF(int flags)
     }
 
     printf("PC: %08X\n",tempPC);
+    if(change == 0)
     printf("IF: %08X\n",IF_ID.instruction);
+    else
+    printf("IF: %08X to_be_flushed\n",IF_ID.instruction);
     printf("ID: %08X\n",show_IDi);
     printf("EX: %08X\n",show_EXi);
     printf("DM: %08X\n",show_DMi);
