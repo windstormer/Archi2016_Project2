@@ -1260,7 +1260,7 @@ printf("ID: %X\n",IF_ID.instruction);
             if(reg[rs]==reg[rt])
             {
                 branch = 1;
-                PCback = IF_ID.PC + immediate*4;
+                PCback = IF_ID.PC + 4 + immediate*4;
             }
 
             ID_EX.immediate_ext = 0;
@@ -1280,7 +1280,7 @@ printf("ID: %X\n",IF_ID.instruction);
             if(reg[rs]!=reg[rt])
             {
                 branch = 1;
-                PCback = IF_ID.PC + immediate*4;
+                PCback = IF_ID.PC + 4 + immediate*4;
             }
 
             ID_EX.immediate_ext = 0;
@@ -1294,10 +1294,11 @@ printf("ID: %X\n",IF_ID.instruction);
         {
             immediate = cut_immediate(IF_ID.instruction);
             rs = cut_rs(IF_ID.instruction);
+
             if(reg[rs]>0)
             {
                 branch = 1;
-                PCback = IF_ID.PC + immediate*4;
+                PCback = IF_ID.PC + 4 + immediate*4;
             }
 
             ID_EX.immediate_ext = 0;
@@ -1348,12 +1349,13 @@ int IF(int flags)
 {
 
     int i=0;
-    int tempPC=0;
+
 
     if(flags==0)
     {
         tempPC = PC;
         change = 0;
+        branch = 0;
     }
     else
     {
@@ -1372,12 +1374,16 @@ int IF(int flags)
                 changePC = PCback;
             }
             else
-                tempPC+=4;
+            {
+                 tempPC+=4;
+
+            }
+
 
         }
 
     }
-
+   // printf("flags = %d, bramch = %d, change = %d\n",flags,branch,change);
 
     if(tempPC>=PC_start)
     {
@@ -1399,6 +1405,7 @@ int IF(int flags)
         IF_ID.instruction=0;
     }
 
+    printf("PC: %d\n",tempPC);
     printf("IF: %X\n",IF_ID.instruction);
     op=(unsigned)iim[i]>>26;
     if(op==0x3F)

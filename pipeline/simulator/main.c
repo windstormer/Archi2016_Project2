@@ -97,7 +97,9 @@ int flags=0;
 int count=0;
 	while(1)
 	{
+	//    if(count>4)break;
 	    printf("cycle %d\n",count);
+
 	check[0]=WB();
 	check[1]=DM();
 	check[2]=EX();
@@ -113,6 +115,7 @@ if(check[0]==1 && check[1]==1 && check[2]==1 && check[3]==1 && check[4]==1)
 	break;
 
 count++;
+printf("\n");
 	}
 
 

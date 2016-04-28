@@ -10,6 +10,7 @@ int IF(int);
 
 
 int PCback,branch;
+int tempPC;
 int changePC;
 int change;
 
