@@ -8,7 +8,10 @@ int EX();
 int ID();
 int IF(int);
 
+extern FILE *snapshot;
+extern FILE *error;
 
+int forward[2];
 int PCback,branch;
 int tempPC;
 int changePC;

@@ -25,6 +25,7 @@ typedef struct _EXDM
     int ALU_result;
     int read_data2;
     int write_reg;
+    int can_forward;
 } EXDM;
 
 
@@ -567,321 +568,328 @@ int DM()
 int EX()
 {
 
-   show_EXi = ID_EX.instruction;
-int temp=0;
-int flag=0;
-if(ID_EX.instruction==0)
-{
-    EX_DM.instruction=0;
-    return 0;
-}
+    show_EXi = ID_EX.instruction;
+    int temp=0;
+    int flag=0;
+    if(ID_EX.instruction==0)
+    {
+        EX_DM.instruction=0;
+        return 0;
+    }
 
-op=(unsigned)ID_EX.instruction>>26;
-
-
+    op=(unsigned)ID_EX.instruction>>26;
 
 
-            switch(op)
-            {
-            case 0x00:
-            {
-                funct=cut_func(ID_EX.instruction);
-
-                switch(funct)
-                {
-                case 0x20:	///add
-                {
-                    EX_DM.instruction=ID_EX.instruction;
-                    temp=ID_EX.read_data1+ID_EX.read_data2;
-
-                    EX_DM.ALU_result=temp;
-                    EX_DM.write_reg=ID_EX.write_reg;
-                    break;
-                }
-                case 0x21:	///addu
-                {
-                    EX_DM.instruction=ID_EX.instruction;
-                    temp=ID_EX.read_data1+ID_EX.read_data2;
-
-                    EX_DM.ALU_result=temp;
-                    EX_DM.write_reg=ID_EX.write_reg;
-                    break;
-                }
-                case 0x22:	///sub
-                {
-                    EX_DM.instruction=ID_EX.instruction;
-                    temp=ID_EX.read_data1+(-1)*ID_EX.read_data2;
-
-                    EX_DM.ALU_result=temp;
-                    EX_DM.write_reg=ID_EX.write_reg;
-                    break;
-                }
-                case 0x24:	///and
-                {
-                    EX_DM.instruction=ID_EX.instruction;
-                    temp=ID_EX.read_data1&ID_EX.read_data2;
-
-                    EX_DM.ALU_result=temp;
-                    EX_DM.write_reg=ID_EX.write_reg;
-                    break;
-                }
-                case 0x25:	///or
-                {
-                    EX_DM.instruction=ID_EX.instruction;
-                    temp=ID_EX.read_data1|ID_EX.read_data2;
-
-                    EX_DM.ALU_result=temp;
-                    EX_DM.write_reg=ID_EX.write_reg;
-                    break;
-                }
-                case 0x26:	///xor
-                {
-                    EX_DM.instruction=ID_EX.instruction;
-                    temp=ID_EX.read_data1^ID_EX.read_data2;
-
-                    EX_DM.ALU_result=temp;
-                    EX_DM.write_reg=ID_EX.write_reg;
-                    break;
-                }
-                case 0x27:	///nor
-                {
-                    EX_DM.instruction=ID_EX.instruction;
-                    temp=~(ID_EX.read_data1|ID_EX.read_data2);
-
-                    EX_DM.ALU_result=temp;
-                    break;
-                }
-                case 0x28:	///nand
-                {
-                    EX_DM.instruction=ID_EX.instruction;
-                    temp=~(ID_EX.read_data1&ID_EX.read_data2);
-
-                    EX_DM.ALU_result=temp;
-                    EX_DM.write_reg=ID_EX.write_reg;
-                    break;
-                }
-                case 0x2A:	///slt
-                {
-                    EX_DM.instruction=ID_EX.instruction;
-                    if(ID_EX.read_data1<ID_EX.read_data2)
-                        temp=1;
-                    else temp=0;
-
-                    EX_DM.ALU_result=temp;
-                    EX_DM.write_reg=ID_EX.write_reg;
-                    break;
-                }
-                case 0x00:	///sll
-                {
-                    EX_DM.instruction=ID_EX.instruction;
-                    temp=ID_EX.read_data1<<ID_EX.immediate_ext;
-
-                    EX_DM.ALU_result=temp;
-                    EX_DM.write_reg=ID_EX.write_reg;
-                    break;
-                }
-                case 0x02:	///srl
-                {
-                    EX_DM.instruction=ID_EX.instruction;
-                    temp=(unsigned)ID_EX.read_data1>>ID_EX.immediate_ext;
-
-                    EX_DM.ALU_result=temp;
-                    EX_DM.write_reg=ID_EX.write_reg;
-                    break;
-                }
-                case 0x03:	///sra
-                {
-                    EX_DM.instruction=ID_EX.instruction;
-                    temp=ID_EX.read_data1>>ID_EX.immediate_ext;
-
-                    EX_DM.ALU_result=temp;
-                    EX_DM.write_reg=ID_EX.write_reg;
-                    break;
-                }
-                case 0x08:	///jr
-                {
-                    EX_DM.instruction=ID_EX.instruction;
-                    break;
-                }
-
-                }
-                break;
-            }
-            case 0x08:	///addi
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                temp=ID_EX.read_data1+ID_EX.immediate_ext;
-
-                EX_DM.ALU_result=temp;
-                EX_DM.write_reg=ID_EX.write_reg;
-                break;
-            }
-            case 0x09:	///addiu
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                temp=ID_EX.read_data1+ID_EX.immediate_ext;
-
-                EX_DM.ALU_result=temp;
-                EX_DM.write_reg=ID_EX.write_reg;
-                break;
-            }
-            case 0x23:	///lw
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                temp=ID_EX.read_data1+ID_EX.immediate_ext;
-
-                EX_DM.ALU_result=temp;
-                EX_DM.write_reg=ID_EX.write_reg;
-                break;
-            }
-            case 0x21:	///lh
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                temp=ID_EX.read_data1+ID_EX.immediate_ext;
-
-                EX_DM.ALU_result=temp;
-                EX_DM.write_reg=ID_EX.write_reg;
-                break;
-            }
-            case 0x25:	///lhu
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                temp=ID_EX.read_data1+ID_EX.immediate_ext;
-
-                EX_DM.ALU_result=temp;
-                EX_DM.write_reg=ID_EX.write_reg;
-                break;
-            }
-            case 0x20:	///lb
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                temp=ID_EX.read_data1+ID_EX.immediate_ext;
-
-                EX_DM.ALU_result=temp;
-                EX_DM.write_reg=ID_EX.write_reg;
-                break;
-            }
-            case 0x24:	///lbu
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                temp=ID_EX.read_data1+ID_EX.immediate_ext;
-
-                EX_DM.ALU_result=temp;
-                EX_DM.write_reg=ID_EX.write_reg;
-                break;
-            }
-            case 0x2B:	///sw
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                temp=ID_EX.read_data1+ID_EX.immediate_ext;
-
-                EX_DM.ALU_result=temp;
-                EX_DM.read_data2=ID_EX.read_data2;
-                break;
-            }
-            case 0x29:	///sh
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                temp=ID_EX.read_data1+ID_EX.immediate_ext;
-
-                EX_DM.ALU_result=temp;
-                EX_DM.read_data2=ID_EX.read_data2;
-                break;
-            }
-            case 0x28:	///sb
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                temp=ID_EX.read_data1+ID_EX.immediate_ext;
-
-                EX_DM.ALU_result=temp;
-                EX_DM.read_data2=ID_EX.read_data2;
-                break;
-            }
-            case 0x0F:	///lui
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                temp=ID_EX.immediate_ext<<16;
-
-                EX_DM.ALU_result=temp;
-                EX_DM.write_reg=ID_EX.write_reg;
-                break;
-            }
-            case 0x0C:	///andi
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                temp=ID_EX.read_data1&ID_EX.immediate_ext;
-
-                EX_DM.ALU_result=temp;
-                EX_DM.write_reg=ID_EX.write_reg;
-                break;
-            }
-            case 0x0D:	///ori
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                temp=ID_EX.read_data1|ID_EX.immediate_ext;
-
-                EX_DM.ALU_result=temp;
-                EX_DM.write_reg=ID_EX.write_reg;
-                break;
-            }
-            case 0x0E:	///nori
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                temp=~(ID_EX.read_data1|ID_EX.immediate_ext);
-
-                EX_DM.ALU_result=temp;
-                EX_DM.write_reg=ID_EX.write_reg;
-                break;
-            }
-            case 0x0A:	///slti
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                if(ID_EX.read_data1<ID_EX.immediate_ext)
-                temp =1;
-                else temp=0;
-
-                EX_DM.ALU_result=temp;
-                EX_DM.write_reg=ID_EX.write_reg;
-                break;
-            }
-            case 0x04:	///beq
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                break;
-            }
-            case 0x05:	///bne
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                break;
-            }
-            case 0x07:	///bgtz
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                break;
-            }
-            case 0x02:	///j
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                break;
-            }
-            case 0x03:	///jal
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                break;
-            }
-            case 0x3F:	///halt
-            {
-                EX_DM.instruction=ID_EX.instruction;
-                //  printf("halt\n");
-                flag=1;
-                break;
-            }
 
 
-            }
+    switch(op)
+    {
+    case 0x00:
+    {
+        funct=cut_func(ID_EX.instruction);
 
-			if(flag==1) return 1;
-			else return 0;
+        switch(funct)
+        {
+        case 0x20:	///add
+        {
+            EX_DM.instruction=ID_EX.instruction;
+            temp=ID_EX.read_data1+ID_EX.read_data2;
+            EX_DM.can_forward=1;
+            EX_DM.ALU_result=temp;
+            EX_DM.write_reg=ID_EX.write_reg;
+            break;
+        }
+        case 0x21:	///addu
+        {
+            EX_DM.instruction=ID_EX.instruction;
+            temp=ID_EX.read_data1+ID_EX.read_data2;
+            EX_DM.can_forward=1;
+            EX_DM.ALU_result=temp;
+            EX_DM.write_reg=ID_EX.write_reg;
+            break;
+        }
+        case 0x22:	///sub
+        {
+            EX_DM.instruction=ID_EX.instruction;
+            temp=ID_EX.read_data1+(-1)*ID_EX.read_data2;
+            EX_DM.can_forward=1;
+            EX_DM.ALU_result=temp;
+            EX_DM.write_reg=ID_EX.write_reg;
+            break;
+        }
+        case 0x24:	///and
+        {
+            EX_DM.instruction=ID_EX.instruction;
+            temp=ID_EX.read_data1&ID_EX.read_data2;
+            EX_DM.can_forward=1;
+            EX_DM.ALU_result=temp;
+            EX_DM.write_reg=ID_EX.write_reg;
+            break;
+        }
+        case 0x25:	///or
+        {
+            EX_DM.instruction=ID_EX.instruction;
+            temp=ID_EX.read_data1|ID_EX.read_data2;
+            EX_DM.can_forward=1;
+            EX_DM.ALU_result=temp;
+            EX_DM.write_reg=ID_EX.write_reg;
+            break;
+        }
+        case 0x26:	///xor
+        {
+            EX_DM.instruction=ID_EX.instruction;
+            temp=ID_EX.read_data1^ID_EX.read_data2;
+            EX_DM.can_forward=1;
+            EX_DM.ALU_result=temp;
+            EX_DM.write_reg=ID_EX.write_reg;
+            break;
+        }
+        case 0x27:	///nor
+        {
+            EX_DM.instruction=ID_EX.instruction;
+            temp=~(ID_EX.read_data1|ID_EX.read_data2);
+            EX_DM.can_forward=1;
+            EX_DM.ALU_result=temp;
+            break;
+        }
+        case 0x28:	///nand
+        {
+            EX_DM.instruction=ID_EX.instruction;
+            temp=~(ID_EX.read_data1&ID_EX.read_data2);
+            EX_DM.can_forward=1;
+            EX_DM.ALU_result=temp;
+            EX_DM.write_reg=ID_EX.write_reg;
+            break;
+        }
+        case 0x2A:	///slt
+        {
+            EX_DM.instruction=ID_EX.instruction;
+            if(ID_EX.read_data1<ID_EX.read_data2)
+                temp=1;
+            else temp=0;
+            EX_DM.can_forward=1;
+            EX_DM.ALU_result=temp;
+            EX_DM.write_reg=ID_EX.write_reg;
+            break;
+        }
+        case 0x00:	///sll
+        {
+            EX_DM.instruction=ID_EX.instruction;
+            temp=ID_EX.read_data1<<ID_EX.immediate_ext;
+            EX_DM.can_forward=1;
+            EX_DM.ALU_result=temp;
+            EX_DM.write_reg=ID_EX.write_reg;
+            break;
+        }
+        case 0x02:	///srl
+        {
+            EX_DM.instruction=ID_EX.instruction;
+            temp=(unsigned)ID_EX.read_data1>>ID_EX.immediate_ext;
+            EX_DM.can_forward=1;
+            EX_DM.ALU_result=temp;
+            EX_DM.write_reg=ID_EX.write_reg;
+            break;
+        }
+        case 0x03:	///sra
+        {
+            EX_DM.instruction=ID_EX.instruction;
+            temp=ID_EX.read_data1>>ID_EX.immediate_ext;
+            EX_DM.can_forward=1;
+            EX_DM.ALU_result=temp;
+            EX_DM.write_reg=ID_EX.write_reg;
+            break;
+        }
+        case 0x08:	///jr
+        {
+            EX_DM.instruction=ID_EX.instruction;
+            EX_DM.can_forward=0;
+            break;
+        }
+
+        }
+        break;
+    }
+    case 0x08:	///addi
+    {
+        EX_DM.instruction=ID_EX.instruction;
+        temp=ID_EX.read_data1+ID_EX.immediate_ext;
+        EX_DM.can_forward=1;
+        EX_DM.ALU_result=temp;
+        EX_DM.write_reg=ID_EX.write_reg;
+        break;
+    }
+    case 0x09:	///addiu
+    {
+        EX_DM.instruction=ID_EX.instruction;
+        temp=ID_EX.read_data1+ID_EX.immediate_ext;
+        EX_DM.can_forward=1;
+        EX_DM.ALU_result=temp;
+        EX_DM.write_reg=ID_EX.write_reg;
+        break;
+    }
+    case 0x23:	///lw
+    {
+        EX_DM.instruction=ID_EX.instruction;
+        temp=ID_EX.read_data1+ID_EX.immediate_ext;
+        EX_DM.can_forward=0;
+        EX_DM.ALU_result=temp;
+        EX_DM.write_reg=ID_EX.write_reg;
+        break;
+    }
+    case 0x21:	///lh
+    {
+        EX_DM.instruction=ID_EX.instruction;
+        temp=ID_EX.read_data1+ID_EX.immediate_ext;
+        EX_DM.can_forward=0;
+        EX_DM.ALU_result=temp;
+        EX_DM.write_reg=ID_EX.write_reg;
+        break;
+    }
+    case 0x25:	///lhu
+    {
+        EX_DM.instruction=ID_EX.instruction;
+        temp=ID_EX.read_data1+ID_EX.immediate_ext;
+        EX_DM.can_forward=0;
+        EX_DM.ALU_result=temp;
+        EX_DM.write_reg=ID_EX.write_reg;
+        break;
+    }
+    case 0x20:	///lb
+    {
+        EX_DM.instruction=ID_EX.instruction;
+        temp=ID_EX.read_data1+ID_EX.immediate_ext;
+        EX_DM.can_forward=0;
+        EX_DM.ALU_result=temp;
+        EX_DM.write_reg=ID_EX.write_reg;
+        break;
+    }
+    case 0x24:	///lbu
+    {
+        EX_DM.instruction=ID_EX.instruction;
+        temp=ID_EX.read_data1+ID_EX.immediate_ext;
+        EX_DM.can_forward=0;
+        EX_DM.ALU_result=temp;
+        EX_DM.write_reg=ID_EX.write_reg;
+        break;
+    }
+    case 0x2B:	///sw
+    {
+        EX_DM.instruction=ID_EX.instruction;
+        temp=ID_EX.read_data1+ID_EX.immediate_ext;
+        EX_DM.can_forward=0;
+        EX_DM.ALU_result=temp;
+        EX_DM.read_data2=ID_EX.read_data2;
+        break;
+    }
+    case 0x29:	///sh
+    {
+        EX_DM.instruction=ID_EX.instruction;
+        temp=ID_EX.read_data1+ID_EX.immediate_ext;
+        EX_DM.can_forward=0;
+        EX_DM.ALU_result=temp;
+        EX_DM.read_data2=ID_EX.read_data2;
+        break;
+    }
+    case 0x28:	///sb
+    {
+        EX_DM.instruction=ID_EX.instruction;
+        temp=ID_EX.read_data1+ID_EX.immediate_ext;
+        EX_DM.can_forward=0;
+        EX_DM.ALU_result=temp;
+        EX_DM.read_data2=ID_EX.read_data2;
+        break;
+    }
+    case 0x0F:	///lui
+    {
+        EX_DM.instruction=ID_EX.instruction;
+        temp=ID_EX.immediate_ext<<16;
+        EX_DM.can_forward=1;
+        EX_DM.ALU_result=temp;
+        EX_DM.write_reg=ID_EX.write_reg;
+        break;
+    }
+    case 0x0C:	///andi
+    {
+        EX_DM.instruction=ID_EX.instruction;
+        temp=ID_EX.read_data1&ID_EX.immediate_ext;
+        EX_DM.can_forward=1;
+        EX_DM.ALU_result=temp;
+        EX_DM.write_reg=ID_EX.write_reg;
+        break;
+    }
+    case 0x0D:	///ori
+    {
+        EX_DM.instruction=ID_EX.instruction;
+        temp=ID_EX.read_data1|ID_EX.immediate_ext;
+        EX_DM.can_forward=1;
+        EX_DM.ALU_result=temp;
+        EX_DM.write_reg=ID_EX.write_reg;
+        break;
+    }
+    case 0x0E:	///nori
+    {
+        EX_DM.instruction=ID_EX.instruction;
+        temp=~(ID_EX.read_data1|ID_EX.immediate_ext);
+        EX_DM.can_forward=1;
+        EX_DM.ALU_result=temp;
+        EX_DM.write_reg=ID_EX.write_reg;
+        break;
+    }
+    case 0x0A:	///slti
+    {
+        EX_DM.instruction=ID_EX.instruction;
+        if(ID_EX.read_data1<ID_EX.immediate_ext)
+            temp =1;
+        else temp=0;
+        EX_DM.can_forward=1;
+        EX_DM.ALU_result=temp;
+        EX_DM.write_reg=ID_EX.write_reg;
+        break;
+    }
+    case 0x04:	///beq
+    {
+        EX_DM.can_forward=0;
+        EX_DM.instruction=ID_EX.instruction;
+        break;
+    }
+    case 0x05:	///bne
+    {
+        EX_DM.can_forward=0;
+        EX_DM.instruction=ID_EX.instruction;
+        break;
+    }
+    case 0x07:	///bgtz
+    {
+        EX_DM.can_forward=0;
+        EX_DM.instruction=ID_EX.instruction;
+        break;
+    }
+    case 0x02:	///j
+    {
+        EX_DM.can_forward=0;
+        EX_DM.instruction=ID_EX.instruction;
+        break;
+    }
+    case 0x03:	///jal
+    {
+        EX_DM.can_forward=0;
+        EX_DM.instruction=ID_EX.instruction;
+        break;
+    }
+    case 0x3F:	///halt
+    {
+        EX_DM.can_forward=0;
+        EX_DM.instruction=ID_EX.instruction;
+        //  printf("halt\n");
+        flag=1;
+        break;
+    }
+
+
+    }
+
+    if(flag==1) return 1;
+    else return 0;
 
 }
 
@@ -910,440 +918,794 @@ int ID()
 
 
 
-        switch(op)
-        {
-        case 0x00:
-        {
-            funct=cut_func(IF_ID.instruction);
+    switch(op)
+    {
+    case 0x00:
+    {
+        funct=cut_func(IF_ID.instruction);
 
-            switch(funct)
+        switch(funct)
+        {
+        case 0x20:	///add
+        {
+            rs = cut_rs(IF_ID.instruction);
+            rt = cut_rt(IF_ID.instruction);
+            rd = cut_rd(IF_ID.instruction);
+            ID_EX.immediate_ext = 0;
+            ID_EX.instruction = IF_ID.instruction;
+            if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
             {
-            case 0x20:	///add
-            {
-                rs = cut_rs(IF_ID.instruction);
-                rt = cut_rt(IF_ID.instruction);
-                rd = cut_rd(IF_ID.instruction);
-                ID_EX.immediate_ext = 0;
-                ID_EX.instruction = IF_ID.instruction;
+                ID_EX.read_data1 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rs;
+            }
+            else
                 ID_EX.read_data1 = reg[rs];
+            if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
+            {
+                ID_EX.read_data2 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rt;
+            }
+            else
                 ID_EX.read_data2 = reg[rt];
-                ID_EX.write_reg = rd;
+            ID_EX.write_reg = rd;
 
-                break;
-            }
-            case 0x21:	///addu
+            break;
+        }
+        case 0x21:	///addu
+        {
+            rs = cut_rs(IF_ID.instruction);
+            rt = cut_rt(IF_ID.instruction);
+            rd = cut_rd(IF_ID.instruction);
+            ID_EX.immediate_ext = 0;
+            ID_EX.instruction = IF_ID.instruction;
+            if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
             {
-                rs = cut_rs(IF_ID.instruction);
-                rt = cut_rt(IF_ID.instruction);
-                rd = cut_rd(IF_ID.instruction);
-                ID_EX.immediate_ext = 0;
-                ID_EX.instruction = IF_ID.instruction;
+                ID_EX.read_data1 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rs;
+            }
+            else
                 ID_EX.read_data1 = reg[rs];
-                ID_EX.read_data2 = reg[rt];
-                ID_EX.write_reg = rd;
-                break;
-            }
-            case 0x22:	///sub
+            if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
             {
-                rs = cut_rs(IF_ID.instruction);
-                rt = cut_rt(IF_ID.instruction);
-                rd = cut_rd(IF_ID.instruction);
-                ID_EX.immediate_ext = 0;
-                ID_EX.instruction = IF_ID.instruction;
+                ID_EX.read_data2 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rt;
+            }
+            else
+                ID_EX.read_data2 = reg[rt];
+            ID_EX.write_reg = rd;
+            break;
+        }
+        case 0x22:	///sub
+        {
+            rs = cut_rs(IF_ID.instruction);
+            rt = cut_rt(IF_ID.instruction);
+            rd = cut_rd(IF_ID.instruction);
+            ID_EX.immediate_ext = 0;
+            ID_EX.instruction = IF_ID.instruction;
+            if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
+            {
+                ID_EX.read_data1 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rs;
+            }
+            else
                 ID_EX.read_data1 = reg[rs];
-                ID_EX.read_data2 = reg[rt];
-                ID_EX.write_reg = rd;
-                break;
-            }
-            case 0x24:	///and
+            if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
             {
-                rs = cut_rs(IF_ID.instruction);
-                rt = cut_rt(IF_ID.instruction);
-                rd = cut_rd(IF_ID.instruction);
-                ID_EX.immediate_ext = 0;
-                ID_EX.instruction = IF_ID.instruction;
+                ID_EX.read_data2 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rt;
+            }
+            else
+                ID_EX.read_data2 = reg[rt];
+            ID_EX.write_reg = rd;
+            break;
+        }
+        case 0x24:	///and
+        {
+            rs = cut_rs(IF_ID.instruction);
+            rt = cut_rt(IF_ID.instruction);
+            rd = cut_rd(IF_ID.instruction);
+            ID_EX.immediate_ext = 0;
+            ID_EX.instruction = IF_ID.instruction;
+            if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
+            {
+                ID_EX.read_data1 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rs;
+            }
+            else
                 ID_EX.read_data1 = reg[rs];
-                ID_EX.read_data2 = reg[rt];
-                ID_EX.write_reg = rd;
-                break;
-            }
-            case 0x25:	///or
+            if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
             {
-                rs = cut_rs(IF_ID.instruction);
-                rt = cut_rt(IF_ID.instruction);
-                rd = cut_rd(IF_ID.instruction);
-                ID_EX.immediate_ext = 0;
-                ID_EX.instruction = IF_ID.instruction;
+                ID_EX.read_data2 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rt;
+            }
+            else
+                ID_EX.read_data2 = reg[rt];
+            ID_EX.write_reg = rd;
+            break;
+        }
+        case 0x25:	///or
+        {
+            rs = cut_rs(IF_ID.instruction);
+            rt = cut_rt(IF_ID.instruction);
+            rd = cut_rd(IF_ID.instruction);
+            ID_EX.immediate_ext = 0;
+            ID_EX.instruction = IF_ID.instruction;
+            if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
+            {
+                ID_EX.read_data1 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rs;
+            }
+            else
                 ID_EX.read_data1 = reg[rs];
-                ID_EX.read_data2 = reg[rt];
-                ID_EX.write_reg = rd;
-                break;
-            }
-            case 0x26:	///xor
+            if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
             {
-                rs = cut_rs(IF_ID.instruction);
-                rt = cut_rt(IF_ID.instruction);
-                rd = cut_rd(IF_ID.instruction);
-                ID_EX.immediate_ext = 0;
-                ID_EX.instruction = IF_ID.instruction;
+                ID_EX.read_data2 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rt;
+            }
+            else
+                ID_EX.read_data2 = reg[rt];
+            ID_EX.write_reg = rd;
+            break;
+        }
+        case 0x26:	///xor
+        {
+            rs = cut_rs(IF_ID.instruction);
+            rt = cut_rt(IF_ID.instruction);
+            rd = cut_rd(IF_ID.instruction);
+            ID_EX.immediate_ext = 0;
+            ID_EX.instruction = IF_ID.instruction;
+            if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
+            {
+                ID_EX.read_data1 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rs;
+            }
+            else
                 ID_EX.read_data1 = reg[rs];
-                ID_EX.read_data2 = reg[rt];
-                ID_EX.write_reg = rd;
-                break;
-            }
-            case 0x27:	///nor
+            if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
             {
-                rs = cut_rs(IF_ID.instruction);
-                rt = cut_rt(IF_ID.instruction);
-                rd = cut_rd(IF_ID.instruction);
-                ID_EX.immediate_ext = 0;
-                ID_EX.instruction = IF_ID.instruction;
+                ID_EX.read_data2 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rt;
+            }
+            else
+                ID_EX.read_data2 = reg[rt];
+            ID_EX.write_reg = rd;
+            break;
+        }
+        case 0x27:	///nor
+        {
+            rs = cut_rs(IF_ID.instruction);
+            rt = cut_rt(IF_ID.instruction);
+            rd = cut_rd(IF_ID.instruction);
+            ID_EX.immediate_ext = 0;
+            ID_EX.instruction = IF_ID.instruction;
+            if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
+            {
+                ID_EX.read_data1 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rs;
+            }
+            else
                 ID_EX.read_data1 = reg[rs];
-                ID_EX.read_data2 = reg[rt];
-                ID_EX.write_reg = rd;
-                break;
-            }
-            case 0x28:	///nand
+            if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
             {
-                rs = cut_rs(IF_ID.instruction);
-                rt = cut_rt(IF_ID.instruction);
-                rd = cut_rd(IF_ID.instruction);
-                ID_EX.immediate_ext = 0;
-                ID_EX.instruction = IF_ID.instruction;
+                ID_EX.read_data2 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rt;
+            }
+            else
+                ID_EX.read_data2 = reg[rt];
+            ID_EX.write_reg = rd;
+            break;
+        }
+        case 0x28:	///nand
+        {
+            rs = cut_rs(IF_ID.instruction);
+            rt = cut_rt(IF_ID.instruction);
+            rd = cut_rd(IF_ID.instruction);
+            ID_EX.immediate_ext = 0;
+            ID_EX.instruction = IF_ID.instruction;
+            if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
+            {
+                ID_EX.read_data1 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rs;
+            }
+            else
                 ID_EX.read_data1 = reg[rs];
-                ID_EX.read_data2 = reg[rt];
-                ID_EX.write_reg = rd;
-                break;
-            }
-            case 0x2A:	///slt
+            if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
             {
-                rs = cut_rs(IF_ID.instruction);
-                rt = cut_rt(IF_ID.instruction);
-                rd = cut_rd(IF_ID.instruction);
-                ID_EX.immediate_ext = 0;
-                ID_EX.instruction = IF_ID.instruction;
+                ID_EX.read_data2 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rt;
+            }
+            else
+                ID_EX.read_data2 = reg[rt];
+            ID_EX.write_reg = rd;
+            break;
+        }
+        case 0x2A:	///slt
+        {
+            rs = cut_rs(IF_ID.instruction);
+            rt = cut_rt(IF_ID.instruction);
+            rd = cut_rd(IF_ID.instruction);
+            ID_EX.immediate_ext = 0;
+            ID_EX.instruction = IF_ID.instruction;
+            if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
+            {
+                ID_EX.read_data1 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rs;
+            }
+            else
                 ID_EX.read_data1 = reg[rs];
-                ID_EX.read_data2 = reg[rt];
-                ID_EX.write_reg = rd;
-                break;
-            }
-            case 0x00:	///sll
+            if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
             {
-                shamt = cut_shamt(IF_ID.instruction);
-                rt = cut_rt(IF_ID.instruction);
-                rd = cut_rd(IF_ID.instruction);
-                ID_EX.immediate_ext = shamt;
-                ID_EX.instruction = IF_ID.instruction;
+                ID_EX.read_data2 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rt;
+            }
+            else
+                ID_EX.read_data2 = reg[rt];
+            ID_EX.write_reg = rd;
+            break;
+        }
+        case 0x00:	///sll
+        {
+            shamt = cut_shamt(IF_ID.instruction);
+            rt = cut_rt(IF_ID.instruction);
+            rd = cut_rd(IF_ID.instruction);
+            ID_EX.immediate_ext = shamt;
+            ID_EX.instruction = IF_ID.instruction;
+
+            if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
+            {
+                ID_EX.read_data1 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rt;
+            }
+            else
                 ID_EX.read_data1 = reg[rt];
-                ID_EX.read_data2 = 0;
-                ID_EX.write_reg = rd;
-                break;
-            }
-            case 0x02:	///srl
+            ID_EX.read_data2 = 0;
+            ID_EX.write_reg = rd;
+            break;
+        }
+        case 0x02:	///srl
+        {
+            shamt = cut_shamt(IF_ID.instruction);
+            rt = cut_rt(IF_ID.instruction);
+            rd = cut_rd(IF_ID.instruction);
+            ID_EX.immediate_ext = shamt;
+            ID_EX.instruction = IF_ID.instruction;
+            if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
             {
-                shamt = cut_shamt(IF_ID.instruction);
-                rt = cut_rt(IF_ID.instruction);
-                rd = cut_rd(IF_ID.instruction);
-                ID_EX.immediate_ext = shamt;
-                ID_EX.instruction = IF_ID.instruction;
+                ID_EX.read_data1 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rt;
+            }
+            else
                 ID_EX.read_data1 = reg[rt];
-                ID_EX.read_data2 = 0;
-                ID_EX.write_reg = rd;
-                break;
-            }
-            case 0x03:	///sra
+            ID_EX.read_data2 = 0;
+            ID_EX.write_reg = rd;
+            break;
+        }
+        case 0x03:	///sra
+        {
+            shamt = cut_shamt(IF_ID.instruction);
+            rt = cut_rt(IF_ID.instruction);
+            rd = cut_rd(IF_ID.instruction);
+            ID_EX.immediate_ext = shamt;
+            ID_EX.instruction = IF_ID.instruction;
+            if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
             {
-                shamt = cut_shamt(IF_ID.instruction);
-                rt = cut_rt(IF_ID.instruction);
-                rd = cut_rd(IF_ID.instruction);
-                ID_EX.immediate_ext = shamt;
-                ID_EX.instruction = IF_ID.instruction;
+                ID_EX.read_data1 = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rt;
+            }
+            else
                 ID_EX.read_data1 = reg[rt];
-                ID_EX.read_data2 = 0;
-                ID_EX.write_reg = rd;
-                break;
-            }
-            case 0x08:	///jr
+            ID_EX.read_data2 = 0;
+            ID_EX.write_reg = rd;
+            break;
+        }
+        case 0x08:	///jr
+        {
+            ID_EX.instruction = IF_ID.instruction;
+            rs = cut_rs(IF_ID.instruction);
+            branch = 1;
+            if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
             {
-				ID_EX.instruction = IF_ID.instruction;
-                rs = cut_rs(IF_ID.instruction);
-                branch = 1;
+                PCback = EX_DM.ALU_result;
+                forward[0] = 1;
+                forward[1] = rs;
+            }
+            else
                 PCback = reg[rs];
-                break;
-            }
+            break;
+        }
 
-            }
-            break;
         }
-        case 0x08:	///addi
+        break;
+    }
+    case 0x08:	///addi
+    {
+        immediate = cut_immediate(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        ID_EX.immediate_ext = immediate;
+        ID_EX.instruction = IF_ID.instruction;
+        if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
         {
-            immediate = cut_immediate(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            ID_EX.immediate_ext = immediate;
-            ID_EX.instruction = IF_ID.instruction;
-            ID_EX.read_data1 = reg[rs];
-            ID_EX.read_data2 = 0;
-            ID_EX.write_reg = rt;
-            break;
+            ID_EX.read_data1 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rs;
         }
-        case 0x09:	///addiu
-        {
-            immediate = cut_immediate(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            ID_EX.immediate_ext = immediate;
-            ID_EX.instruction = IF_ID.instruction;
+        else
             ID_EX.read_data1 = reg[rs];
-            ID_EX.read_data2 = 0;
-            ID_EX.write_reg = rt;
-            break;
+        ID_EX.read_data2 = 0;
+        ID_EX.write_reg = rt;
+        break;
+    }
+    case 0x09:	///addiu
+    {
+        immediate = cut_immediate(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        ID_EX.immediate_ext = immediate;
+        ID_EX.instruction = IF_ID.instruction;
+        if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
+        {
+            ID_EX.read_data1 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rs;
         }
-        case 0x23:	///lw
-        {
-            immediate = cut_immediate(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            ID_EX.immediate_ext = immediate;
-            ID_EX.instruction = IF_ID.instruction;
+        else
             ID_EX.read_data1 = reg[rs];
-            ID_EX.read_data2 = 0;
-            ID_EX.write_reg = rt;
-            break;
+        ID_EX.read_data2 = 0;
+        ID_EX.write_reg = rt;
+        break;
+    }
+    case 0x23:	///lw
+    {
+        immediate = cut_immediate(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        ID_EX.immediate_ext = immediate;
+        ID_EX.instruction = IF_ID.instruction;
+        if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
+        {
+            ID_EX.read_data1 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rs;
         }
-        case 0x21:	///lh
-        {
-            immediate = cut_immediate(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            ID_EX.immediate_ext = immediate;
-            ID_EX.instruction = IF_ID.instruction;
+        else
             ID_EX.read_data1 = reg[rs];
-            ID_EX.read_data2 = 0;
-            ID_EX.write_reg = rt;
-            break;
+        ID_EX.read_data2 = 0;
+        ID_EX.write_reg = rt;
+        break;
+    }
+    case 0x21:	///lh
+    {
+        immediate = cut_immediate(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        ID_EX.immediate_ext = immediate;
+        ID_EX.instruction = IF_ID.instruction;
+        if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
+        {
+            ID_EX.read_data1 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rs;
         }
-        case 0x25:	///lhu
-        {
-            immediate = cut_immediate(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            ID_EX.immediate_ext = immediate;
-            ID_EX.instruction = IF_ID.instruction;
+        else
             ID_EX.read_data1 = reg[rs];
-            ID_EX.read_data2 = 0;
-            ID_EX.write_reg = rt;
-            break;
+        ID_EX.read_data2 = 0;
+        ID_EX.write_reg = rt;
+        break;
+    }
+    case 0x25:	///lhu
+    {
+        immediate = cut_immediate(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        ID_EX.immediate_ext = immediate;
+        ID_EX.instruction = IF_ID.instruction;
+        if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
+        {
+            ID_EX.read_data1 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rs;
         }
-        case 0x20:	///lb
-        {
-            immediate = cut_immediate(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            ID_EX.immediate_ext = immediate;
-            ID_EX.instruction = IF_ID.instruction;
+        else
             ID_EX.read_data1 = reg[rs];
-            ID_EX.read_data2 = 0;
-            ID_EX.write_reg = rt;
-            break;
+        ID_EX.read_data2 = 0;
+        ID_EX.write_reg = rt;
+        break;
+    }
+    case 0x20:	///lb
+    {
+        immediate = cut_immediate(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        ID_EX.immediate_ext = immediate;
+        ID_EX.instruction = IF_ID.instruction;
+        if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
+        {
+            ID_EX.read_data1 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rs;
         }
-        case 0x24:	///lbu
-        {
-            immediate = cut_immediate(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            ID_EX.immediate_ext = immediate;
-            ID_EX.instruction = IF_ID.instruction;
+        else
             ID_EX.read_data1 = reg[rs];
-            ID_EX.read_data2 = 0;
-            ID_EX.write_reg = rt;
-            break;
+        ID_EX.read_data2 = 0;
+        ID_EX.write_reg = rt;
+        break;
+    }
+    case 0x24:	///lbu
+    {
+        immediate = cut_immediate(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        ID_EX.immediate_ext = immediate;
+        ID_EX.instruction = IF_ID.instruction;
+        if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
+        {
+            ID_EX.read_data1 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rs;
         }
-        case 0x2B:	///sw
-        {
-            immediate = cut_immediate(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            ID_EX.immediate_ext = immediate;
-            ID_EX.instruction = IF_ID.instruction;
+        else
             ID_EX.read_data1 = reg[rs];
+        ID_EX.read_data2 = 0;
+        ID_EX.write_reg = rt;
+        break;
+    }
+    case 0x2B:	///sw
+    {
+        immediate = cut_immediate(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        ID_EX.immediate_ext = immediate;
+        ID_EX.instruction = IF_ID.instruction;
+        if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
+        {
+            ID_EX.read_data1 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rs;
+        }
+        else
+            ID_EX.read_data1 = reg[rs];
+        if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
+        {
+            ID_EX.read_data2 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rt;
+        }
+        else
             ID_EX.read_data2 = reg[rt];
-            ID_EX.write_reg = 0;
-            break;
-        }
-        case 0x29:	///sh
+        ID_EX.write_reg = 0;
+        break;
+    }
+    case 0x29:	///sh
+    {
+        immediate = cut_immediate(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        ID_EX.immediate_ext = immediate;
+        ID_EX.instruction = IF_ID.instruction;
+        if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
         {
-            immediate = cut_immediate(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            ID_EX.immediate_ext = immediate;
-            ID_EX.instruction = IF_ID.instruction;
+            ID_EX.read_data1 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rs;
+        }
+        else
             ID_EX.read_data1 = reg[rs];
+        if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
+        {
+            ID_EX.read_data2 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rt;
+        }
+        else
             ID_EX.read_data2 = reg[rt];
-            ID_EX.write_reg = 0;
-            break;
-        }
-        case 0x28:	///sb
+        ID_EX.write_reg = 0;
+        break;
+    }
+    case 0x28:	///sb
+    {
+        immediate = cut_immediate(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        ID_EX.immediate_ext = immediate;
+        ID_EX.instruction = IF_ID.instruction;
+        if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
         {
-            immediate = cut_immediate(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            ID_EX.immediate_ext = immediate;
-            ID_EX.instruction = IF_ID.instruction;
+            ID_EX.read_data1 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rs;
+        }
+        else
             ID_EX.read_data1 = reg[rs];
+        if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
+        {
+            ID_EX.read_data2 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rt;
+        }
+        else
             ID_EX.read_data2 = reg[rt];
-            ID_EX.write_reg = 0;
-            break;
-        }
-        case 0x0F:	///lui
+        ID_EX.write_reg = 0;
+        break;
+    }
+    case 0x0F:	///lui
+    {
+        immediate = cut_immediate(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        ID_EX.immediate_ext = immediate;
+        ID_EX.instruction = IF_ID.instruction;
+        ID_EX.read_data1 = 0;
+        ID_EX.read_data2 = 0;
+        ID_EX.write_reg = rt;
+        break;
+    }
+    case 0x0C:	///andi
+    {
+        unsigned_immediate = cut_immediate_unsigned(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        ID_EX.immediate_ext = unsigned_immediate;
+        ID_EX.instruction = IF_ID.instruction;
+        if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
         {
-            immediate = cut_immediate(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            ID_EX.immediate_ext = immediate;
-            ID_EX.instruction = IF_ID.instruction;
-            ID_EX.read_data1 = 0;
-            ID_EX.read_data2 = 0;
-            ID_EX.write_reg = rt;
-            break;
+            ID_EX.read_data1 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rs;
         }
-        case 0x0C:	///andi
-        {
-            unsigned_immediate = cut_immediate_unsigned(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            ID_EX.immediate_ext = unsigned_immediate;
-            ID_EX.instruction = IF_ID.instruction;
+        else
             ID_EX.read_data1 = reg[rs];
-            ID_EX.read_data2 = 0;
-            ID_EX.write_reg = rt;
-            break;
-        }
-        case 0x0D:	///ori
+        ID_EX.read_data2 = 0;
+        ID_EX.write_reg = rt;
+        break;
+    }
+    case 0x0D:	///ori
+    {
+        unsigned_immediate = cut_immediate_unsigned(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        ID_EX.immediate_ext = unsigned_immediate;
+        ID_EX.instruction = IF_ID.instruction;
+        if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
         {
-            unsigned_immediate = cut_immediate_unsigned(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            ID_EX.immediate_ext = unsigned_immediate;
-            ID_EX.instruction = IF_ID.instruction;
+            ID_EX.read_data1 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rs;
+        }
+        else
             ID_EX.read_data1 = reg[rs];
-            ID_EX.read_data2 = 0;
-            ID_EX.write_reg = rt;
-            break;
-        }
-        case 0x0E:	///nori
+        ID_EX.read_data2 = 0;
+        ID_EX.write_reg = rt;
+        break;
+    }
+    case 0x0E:	///nori
+    {
+        unsigned_immediate = cut_immediate_unsigned(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        ID_EX.immediate_ext = unsigned_immediate;
+        ID_EX.instruction = IF_ID.instruction;
+        if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
         {
-            unsigned_immediate = cut_immediate_unsigned(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            ID_EX.immediate_ext = unsigned_immediate;
-            ID_EX.instruction = IF_ID.instruction;
+            ID_EX.read_data1 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rs;
+        }
+        else
             ID_EX.read_data1 = reg[rs];
-            ID_EX.read_data2 = 0;
-            ID_EX.write_reg = rt;
-            break;
-        }
-        case 0x0A:	///slti
+        ID_EX.read_data2 = 0;
+        ID_EX.write_reg = rt;
+        break;
+    }
+    case 0x0A:	///slti
+    {
+        unsigned_immediate = cut_immediate_unsigned(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        ID_EX.immediate_ext = unsigned_immediate;
+        ID_EX.instruction = IF_ID.instruction;
+        if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
         {
-            unsigned_immediate = cut_immediate_unsigned(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            ID_EX.immediate_ext = unsigned_immediate;
-            ID_EX.instruction = IF_ID.instruction;
+            ID_EX.read_data1 = EX_DM.ALU_result;
+            forward[0] = 1;
+            forward[1] = rs;
+        }
+        else
             ID_EX.read_data1 = reg[rs];
-            ID_EX.read_data2 = 0;
-            ID_EX.write_reg = rt;
-            break;
-        }
-        case 0x04:	///beq
+        ID_EX.read_data2 = 0;
+        ID_EX.write_reg = rt;
+        break;
+    }
+    case 0x04:	///beq
+    {
+        immediate = cut_immediate(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
         {
-            immediate = cut_immediate(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            if(reg[rs]==reg[rt])
+            if(EX_DM.ALU_result==reg[rt])
             {
                 branch = 1;
                 PCback = IF_ID.PC + 4 + immediate*4;
 
             }
-
-            ID_EX.immediate_ext = 0;
-            ID_EX.instruction = IF_ID.instruction;
-            ID_EX.read_data1 = 0;
-            ID_EX.read_data2 = 0;
-            ID_EX.write_reg = 0;
-
-
-            break;
+            forward[0] = 1;
+            forward[1] = rs;
         }
-        case 0x05:	///bne
+        else
         {
-            immediate = cut_immediate(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
-            rt = cut_rt(IF_ID.instruction);
-            if(reg[rs]!=reg[rt])
+            if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
+            {
+                if(EX_DM.ALU_result==reg[rs])
+                {
+                    branch = 1;
+                    PCback = IF_ID.PC + 4 + immediate*4;
+
+                }
+                forward[0] = 1;
+                forward[1] = rt;
+            }
+            else
+            {
+                if(reg[rs]==reg[rt])
+                {
+                    branch = 1;
+                    PCback = IF_ID.PC + 4 + immediate*4;
+
+                }
+                forward[0] = 0;
+                forward[1] = 0;
+
+            }
+
+        }
+
+
+
+        ID_EX.immediate_ext = 0;
+        ID_EX.instruction = IF_ID.instruction;
+        ID_EX.read_data1 = 0;
+        ID_EX.read_data2 = 0;
+        ID_EX.write_reg = 0;
+
+
+        break;
+    }
+    case 0x05:	///bne
+    {
+        immediate = cut_immediate(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        rt = cut_rt(IF_ID.instruction);
+        if(rs==EX_DM.write_reg && EX_DM.can_forward==1)
+        {
+            if(EX_DM.ALU_result!=reg[rt])
             {
                 branch = 1;
                 PCback = IF_ID.PC + 4 + immediate*4;
 
             }
-
-            ID_EX.immediate_ext = 0;
-            ID_EX.instruction = IF_ID.instruction;
-            ID_EX.read_data1 = 0;
-            ID_EX.read_data2 = 0;
-            ID_EX.write_reg = 0;
-            break;
+            forward[0] = 1;
+            forward[1] = rs;
         }
-        case 0x07:	///bgtz
+        else
         {
-            immediate = cut_immediate(IF_ID.instruction);
-            rs = cut_rs(IF_ID.instruction);
+            if(rt==EX_DM.write_reg && EX_DM.can_forward==1)
+            {
+                if(EX_DM.ALU_result!=reg[rs])
+                {
+                    branch = 1;
+                    PCback = IF_ID.PC + 4 + immediate*4;
 
+                }
+                forward[0] = 1;
+                forward[1] = rt;
+            }
+            else
+            {
+                if(reg[rs]!=reg[rt])
+                {
+                    branch = 1;
+                    PCback = IF_ID.PC + 4 + immediate*4;
+
+                }
+                forward[0] = 0;
+                forward[1] = 0;
+
+            }
+
+        }
+
+        ID_EX.immediate_ext = 0;
+        ID_EX.instruction = IF_ID.instruction;
+        ID_EX.read_data1 = 0;
+        ID_EX.read_data2 = 0;
+        ID_EX.write_reg = 0;
+        break;
+    }
+    case 0x07:	///bgtz
+    {
+        immediate = cut_immediate(IF_ID.instruction);
+        rs = cut_rs(IF_ID.instruction);
+        if(rs == EX_DM.write_reg && EX_DM.can_forward==1)
+        {
+            if(EX_DM.ALU_result>0)
+            {
+                branch = 1;
+                PCback = IF_ID.PC + 4 + immediate*4;
+            }
+            forward[0] = 1;
+            forward[1] = rs;
+        }
+        else
+        {
             if(reg[rs]>0)
             {
+
                 branch = 1;
                 PCback = IF_ID.PC + 4 + immediate*4;
 
             }
-
-            ID_EX.immediate_ext = 0;
-            ID_EX.instruction = IF_ID.instruction;
-            ID_EX.read_data1 = 0;
-            ID_EX.read_data2 = 0;
-            ID_EX.write_reg = 0;
-            break;
-        }
-        case 0x02:	///j
-        {
-			ID_EX.instruction = IF_ID.instruction;
-            address = cut_address(IF_ID.instruction);
-            address=address<<2;
-            PCback = (unsigned) IF_ID.PC>>28;
-            PCback = PCback<<28;
-            PCback = (unsigned)PC|address;
-            break;
-        }
-        case 0x03:	///jal
-        {
-			ID_EX.instruction = IF_ID.instruction;
-            address = cut_address(IF_ID.instruction);
-            address=address<<2;
-            reg[31] = IF_ID.PC;
-            PCback = (unsigned) IF_ID.PC>>28;
-            PCback = PCback<<28;
-            PCback = (unsigned)PC|address;
-            break;
-        }
-        case 0x3F:	///halt
-        {
-            //  printf("halt\n");
-            ID_EX.instruction = IF_ID.instruction;
-            flag=1;
-            break;
         }
 
 
-        }
+        ID_EX.immediate_ext = 0;
+        ID_EX.instruction = IF_ID.instruction;
+        ID_EX.read_data1 = 0;
+        ID_EX.read_data2 = 0;
+        ID_EX.write_reg = 0;
+        break;
+    }
+    case 0x02:	///j
+    {
+        ID_EX.instruction = IF_ID.instruction;
+        address = cut_address(IF_ID.instruction);
+        address=address<<2;
+        PCback = (unsigned) IF_ID.PC>>28;
+        PCback = PCback<<28;
+        PCback = (unsigned)PC|address;
+        break;
+    }
+    case 0x03:	///jal
+    {
+        ID_EX.instruction = IF_ID.instruction;
+        address = cut_address(IF_ID.instruction);
+        address=address<<2;
+        reg[31] = IF_ID.PC;
+        PCback = (unsigned) IF_ID.PC>>28;
+        PCback = PCback<<28;
+        PCback = (unsigned)PC|address;
+        break;
+    }
+    case 0x3F:	///halt
+    {
+        //  printf("halt\n");
+        ID_EX.instruction = IF_ID.instruction;
+        flag=1;
+        break;
+    }
+
+
+    }
 
     if(flag==1) return 1;
     else return 0;
@@ -1353,7 +1715,9 @@ int ID()
 int IF(int flags)
 {
 
+
     int i=0;
+    int j=0;
 
 
     if(flags==0)
@@ -1380,7 +1744,7 @@ int IF(int flags)
             }
             else
             {
-                 tempPC+=4;
+                tempPC+=4;
 
             }
 
@@ -1410,15 +1774,15 @@ int IF(int flags)
         IF_ID.instruction=0;
     }
 
-    printf("PC: %08X\n",tempPC);
+    fprintf(snapshot,"PC: %08X\n",tempPC);
     if(change == 0)
-    printf("IF: %08X\n",IF_ID.instruction);
+        fprintf(snapshot,"IF: %08X\n",IF_ID.instruction);
     else
-    printf("IF: %08X to_be_flushed\n",IF_ID.instruction);
-    printf("ID: %08X\n",show_IDi);
-    printf("EX: %08X\n",show_EXi);
-    printf("DM: %08X\n",show_DMi);
-    printf("WB: %08X\n",show_WBi);
+        fprintf(snapshot,"IF: %08X to_be_flushed\n",IF_ID.instruction);
+    fprintf(snapshot,"ID: %08X\n",show_IDi);
+    fprintf(snapshot,"EX: %08X\n",show_EXi);
+    fprintf(snapshot,"DM: %08X\n",show_DMi);
+    fprintf(snapshot,"WB: %08X\n",show_WBi);
 
     if(change == 1 )
         IF_ID.instruction = 0;  ///flush

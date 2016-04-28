@@ -12,16 +12,16 @@ unsigned char di[1024];
 int iim[256];
 unsigned char dim[1024];
 int temp;
-
-
+FILE *snapshot;
+FILE *error;
 
 
 int main(void)
 {
     FILE *iimage = fopen("./iimage.bin","rb");
     FILE *dimage = fopen("./dimage.bin","rb");
-    FILE *error = fopen("./error_dump.rpt","w");
-    FILE *snapshot = fopen("./snapshot.rpt","w");
+    error = fopen("./error_dump.rpt","w");
+    snapshot = fopen("./snapshot.rpt","w");
 
 
 
@@ -95,11 +95,15 @@ int main(void)
 	int check[5]={0};
 int flags=0;
 int count=0;
+int j=0;
 	while(1)
 	{
 	//    if(count>4)break;
-	    printf("cycle %d\n",count);
-
+	    fprintf(snapshot,"cycle %d\n",count);
+    for(j=0; j<32; j++)
+        {
+            fprintf(snapshot,"$%02d: 0x%08X\n",j,reg[j]);
+        }
 	check[0]=WB();
 	check[1]=DM();
 	check[2]=EX();
@@ -115,7 +119,7 @@ if(check[0]==1 && check[1]==1 && check[2]==1 && check[3]==1 && check[4]==1)
 	break;
 
 count++;
-printf("\n");
+fprintf(snapshot,"\n");
 	}
 
 
