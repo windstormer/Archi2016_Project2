@@ -45,7 +45,7 @@ DMWB DM_WB;
 
 int WB()
 {
-    printf("WB: %X\n",DM_WB.instruction);
+    show_WBi = DM_WB.instruction;
     int flag=0;
     op=0,funct=0;
     if(DM_WB.instruction==0)	return 0;
@@ -251,7 +251,8 @@ int WB()
 
 int DM()
 {
-    printf("DM: %X\n",EX_DM.instruction);
+
+    show_DMi = EX_DM.instruction;
     unsigned char *getting;
     int flag=0;
     if(EX_DM.instruction==0)
@@ -566,7 +567,7 @@ int DM()
 int EX()
 {
 
-    printf("EX: %X\n",ID_EX.instruction);
+   show_EXi = ID_EX.instruction;
 int temp=0;
 int flag=0;
 if(ID_EX.instruction==0)
@@ -887,7 +888,8 @@ op=(unsigned)ID_EX.instruction>>26;
 int ID()
 {
 
-printf("ID: %X\n",IF_ID.instruction);
+
+    show_IDi = IF_ID.instruction;
     int flag=0;
     op=(unsigned)IF_ID.instruction>>26;
 
@@ -1261,6 +1263,7 @@ printf("ID: %X\n",IF_ID.instruction);
             {
                 branch = 1;
                 PCback = IF_ID.PC + 4 + immediate*4;
+
             }
 
             ID_EX.immediate_ext = 0;
@@ -1281,6 +1284,7 @@ printf("ID: %X\n",IF_ID.instruction);
             {
                 branch = 1;
                 PCback = IF_ID.PC + 4 + immediate*4;
+
             }
 
             ID_EX.immediate_ext = 0;
@@ -1299,6 +1303,7 @@ printf("ID: %X\n",IF_ID.instruction);
             {
                 branch = 1;
                 PCback = IF_ID.PC + 4 + immediate*4;
+
             }
 
             ID_EX.immediate_ext = 0;
@@ -1383,14 +1388,14 @@ int IF(int flags)
         }
 
     }
-   // printf("flags = %d, bramch = %d, change = %d\n",flags,branch,change);
+    //printf("\nflags = %d, bramch = %d, change = %d\n\n",flags,branch,change);
 
     if(tempPC>=PC_start)
     {
-        if(branch == 1)
+        if(change == 1)
         {
             i=(tempPC-PC_start)/4;
-            IF_ID.instruction = 0;  ///flush
+            IF_ID.instruction = iim[i];
         }
         else
         {
@@ -1405,8 +1410,15 @@ int IF(int flags)
         IF_ID.instruction=0;
     }
 
-    printf("PC: %d\n",tempPC);
-    printf("IF: %X\n",IF_ID.instruction);
+    printf("PC: %08X\n",tempPC);
+    printf("IF: %08X\n",IF_ID.instruction);
+    printf("ID: %08X\n",show_IDi);
+    printf("EX: %08X\n",show_EXi);
+    printf("DM: %08X\n",show_DMi);
+    printf("WB: %08X\n",show_WBi);
+
+    if(change == 1 )
+        IF_ID.instruction = 0;  ///flush
     op=(unsigned)iim[i]>>26;
     if(op==0x3F)
     {

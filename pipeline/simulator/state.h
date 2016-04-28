@@ -20,4 +20,9 @@ extern int PC_start;
 extern int iim[256];
 extern unsigned char dim[1024];
 
+int show_IDi;
+int show_EXi;
+int show_DMi;
+int show_WBi;
+
 unsigned char op,funct;
