@@ -14,6 +14,7 @@ unsigned char dim[1024];
 int temp;
 FILE *snapshot;
 FILE *error;
+int count=0;
 
 
 int main(void)
@@ -94,7 +95,7 @@ int main(void)
     **/
 	int check[5]={0};
 int flags=0;
-int count=0;
+
 int j=0;
 	while(1)
 	{
@@ -114,12 +115,12 @@ int j=0;
 	}
 	else
     check[4]=IF(1);
-
+fprintf(snapshot,"\n");
 if(check[0]==1 && check[1]==1 && check[2]==1 && check[3]==1 && check[4]==1)
 	break;
 
 count++;
-fprintf(snapshot,"\n");
+
 	}
 
 

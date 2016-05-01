@@ -12,6 +12,7 @@ extern FILE *snapshot;
 extern FILE *error;
 
 int stall;
+extern int count;
 
 
 
