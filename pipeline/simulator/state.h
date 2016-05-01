@@ -11,7 +11,10 @@ int IF(int);
 extern FILE *snapshot;
 extern FILE *error;
 
-int forward[2];
+int stall;
+
+
+
 int PCback,branch;
 int tempPC;
 int changePC;
@@ -27,5 +30,6 @@ int show_IDi;
 int show_EXi;
 int show_DMi;
 int show_WBi;
+char * name;
 
 unsigned char op,funct;

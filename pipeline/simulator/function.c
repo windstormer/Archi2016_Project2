@@ -156,3 +156,216 @@ unsigned char* seperate_two(int in)
 
     return back;
 }
+
+char* toname(int instruction)
+{
+unsigned char op;
+unsigned char funct;
+unsigned char shamt;
+unsigned char rt;
+unsigned char rd;
+char* out;
+if(instruction==0)
+{
+        out="NOP";
+        return out;
+}
+op=(unsigned)instruction>>26;
+
+
+
+
+            switch(op)
+            {
+            case 0x00:
+            {
+                funct=cut_func(instruction);
+
+                switch(funct)
+                {
+                case 0x20:	///add
+                {
+                    out = "ADD";
+                    break;
+                }
+                case 0x21:	///addu
+                {
+                    out = "ADDU";
+                    break;
+                }
+                case 0x22:	///sub
+                {
+                    out = "SUB";
+                    break;
+                }
+                case 0x24:	///and
+                {
+                    out = "AND";
+                    break;
+                }
+                case 0x25:	///or
+                {
+                    out = "OR";
+                    break;
+                }
+                case 0x26:	///xor
+                {
+                    out = "XOR";
+                    break;
+                }
+                case 0x27:	///nor
+                {
+                    out = "NOR";
+                    break;
+                }
+                case 0x28:	///nand
+                {
+                    out = "NAD";
+                    break;
+                }
+                case 0x2A:	///slt
+                {
+                    out = "SLT";
+                    break;
+                }
+                case 0x00:	///sll
+                {
+                    shamt = cut_shamt(instruction);
+                    rt = cut_rt(instruction);
+                    rd = cut_rd(instruction);
+                    if(shamt==0&&rt==0&&rd==0)
+                        out = "NOP";
+                    else
+                        out = "SLL";
+                    break;
+                }
+                case 0x02:	///srl
+                {
+                    out = "SRL";
+                    break;
+                }
+                case 0x03:	///sra
+                {
+                    out = "SRA";
+                    break;
+                }
+                case 0x08:	///jr
+                {
+                    out = "JR";
+                    break;
+                }
+
+                }
+                break;
+            }
+            case 0x08:	///addi
+            {
+                out = "ADDI";
+                break;
+            }
+            case 0x09:	///addiu
+            {
+                out = "ADDIU";
+                break;
+            }
+            case 0x23:	///lw
+            {
+                out = "LW";
+                break;
+            }
+            case 0x21:	///lh
+            {
+                out = "LH";
+                break;
+            }
+            case 0x25:	///lhu
+            {
+                out = "LHU";
+                break;
+            }
+            case 0x20:	///lb
+            {
+                out = "LB";
+                break;
+            }
+            case 0x24:	///lbu
+            {
+                out = "LBU";
+                break;
+            }
+            case 0x2B:	///sw
+            {
+                out = "SW";
+                break;
+            }
+            case 0x29:	///sh
+            {
+                out = "SH";
+                break;
+            }
+            case 0x28:	///sb
+            {
+                out = "SB";
+                break;
+            }
+            case 0x0F:	///lui
+            {
+                out = "LUI";
+                break;
+            }
+            case 0x0C:	///andi
+            {
+                out = "ANDI";
+                break;
+            }
+            case 0x0D:	///ori
+            {
+                out = "ORI";
+                break;
+            }
+            case 0x0E:	///nori
+            {
+                out = "NORI";
+                break;
+            }
+            case 0x0A:	///slti
+            {
+                out = "SLTI";
+                break;
+            }
+            case 0x04:	///beq
+            {
+                out = "BEQ";
+                break;
+            }
+            case 0x05:	///bne
+            {
+                out = "BNE";
+                break;
+            }
+            case 0x07:	///bgtz
+            {
+                out = "BGTZ";
+                break;
+            }
+            case 0x02:	///j
+            {
+                out = "J";
+                break;
+            }
+            case 0x03:	///jal
+            {
+                out = "JAL";
+                break;
+            }
+            case 0x3F:	///halt
+            {
+                out = "HALT";
+                break;
+            }
+
+
+            }
+
+return out;
+}
