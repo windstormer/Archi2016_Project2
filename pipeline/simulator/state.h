@@ -13,6 +13,8 @@ extern FILE *error;
 
 int stall;
 extern int count;
+int errors[4];
+
 
 
 

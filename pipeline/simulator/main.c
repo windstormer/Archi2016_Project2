@@ -15,6 +15,7 @@ int temp;
 FILE *snapshot;
 FILE *error;
 int count=0;
+extern errors[4];
 
 
 int main(void)
@@ -93,35 +94,47 @@ int main(void)
     sins: int of the number of instruction
     sdata : int of the number of memory (word)
     **/
-	int check[5]={0};
-int flags=0;
+    int check[5]= {0};
+    int flags=0;
 
-int j=0;
-	while(1)
-	{
-	//    if(count>4)break;
-	    fprintf(snapshot,"cycle %d\n",count);
-    for(j=0; j<32; j++)
+    int j=0;
+    while(1)
+    {
+        //    if(count>4)break;
+
+        errors[0]=0;
+        errors[1]=0;
+        errors[2]=0;
+        errors[3]=0;
+
+        fprintf(snapshot,"cycle %d\n",count);
+        for(j=0; j<32; j++)
         {
             fprintf(snapshot,"$%02d: 0x%08X\n",j,reg[j]);
         }
-	check[0]=WB();
-	check[1]=DM();
-	check[2]=EX();
-	check[3]=ID();
-	if(flags==0)
-	{check[4]=IF(0);
-	flags=1;
-	}
-	else
-    check[4]=IF(1);
-fprintf(snapshot,"\n");
-if(check[0]==1 && check[1]==1 && check[2]==1 && check[3]==1 && check[4]==1)
-	break;
+        check[0]=WB();
+        check[1]=DM();
+        check[2]=EX();
+        check[3]=ID();
+        if(flags==0)
+        {
+            check[4]=IF(0);
+            flags=1;
+        }
+        else
+            check[4]=IF(1);
+        fprintf(snapshot,"\n");
+        if(check[0]==1 && check[1]==1 && check[2]==1 && check[3]==1 && check[4]==1)
+            break;
 
-count++;
+        if(check[1]==2)
+        {
+            break;
+        }
 
-	}
+        count++;
+
+    }
 
 
 
