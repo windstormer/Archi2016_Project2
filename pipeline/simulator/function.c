@@ -220,7 +220,7 @@ op=(unsigned)instruction>>26;
                 }
                 case 0x28:	///nand
                 {
-                    out = "NAD";
+                    out = "NAND";
                     break;
                 }
                 case 0x2A:	///slt

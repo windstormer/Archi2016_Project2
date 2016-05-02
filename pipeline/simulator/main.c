@@ -123,6 +123,7 @@ int main(void)
         }
         else
             check[4]=IF(1);
+
         fprintf(snapshot,"\n");
         if(check[0]==1 && check[1]==1 && check[2]==1 && check[3]==1 && check[4]==1)
             break;
