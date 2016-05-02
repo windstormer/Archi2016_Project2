@@ -17,7 +17,7 @@ int errors[4];
 
 
 
-
+int stalls;
 int PCback,branch;
 int tempPC;
 int changePC;
