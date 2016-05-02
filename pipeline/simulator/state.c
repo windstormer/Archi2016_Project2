@@ -1012,7 +1012,7 @@ int EX()
         case 0x08:	///jr
         {
             EX_DM.instruction=ID_EX.instruction;
-            EX_DM.can_forward=0;
+            EX_DM.can_forward=2;
             break;
         }
 
@@ -1223,7 +1223,7 @@ int EX()
     }
     case 0x02:	///j
     {
-        EX_DM.can_forward=0;
+        EX_DM.can_forward=2;
         EX_DM.instruction=ID_EX.instruction;
         break;
     }
@@ -2675,14 +2675,16 @@ int ID()
     }
     case 0x02:	///j
     {
+
         ID_EX.instruction = IF_ID.instruction;
         address = cut_address(IF_ID.instruction);
+
         branch=1;
         IF_ID.PC+=4;
         address=address<<2;
         PCback = (unsigned) IF_ID.PC>>28;
         PCback = PCback<<28;
-        PCback = (unsigned)IF_ID.PC|address;
+        PCback = (unsigned)PCback|address;
         break;
     }
     case 0x03:	///jal
@@ -2696,7 +2698,7 @@ int ID()
         ID_EX.immediate_ext = IF_ID.PC;
         PCback = (unsigned) IF_ID.PC>>28;
         PCback = PCback<<28;
-        PCback = (unsigned)IF_ID.PC|address;
+        PCback = (unsigned)PCback|address;
         break;
     }
     case 0x3F:	///halt
