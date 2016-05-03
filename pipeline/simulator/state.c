@@ -442,6 +442,7 @@ int DM()
     unsigned char *getting;
     int flag=0;
     int flags=0;
+    DM_WB.can_forward = EX_DM.can_forward;
     if(EX_DM.instruction==0)
     {
         DM_WB.instruction=EX_DM.instruction;
@@ -452,7 +453,7 @@ int DM()
         DM_WB.write_reg=0;
         return 0;
     }
-    DM_WB.can_forward = EX_DM.can_forward;
+
     op=(unsigned)EX_DM.instruction>>26;
 
 
@@ -1901,26 +1902,25 @@ int ID()
         {
             ID_EX.instruction = IF_ID.instruction;
             rs = cut_rs(IF_ID.instruction);
-            branch = 1;
-            if(!((EX_DM.write_reg==DM_WB.write_reg)&&(EX_DM.can_forward==1)))
-                if(((rs==DM_WB.write_reg&&DM_WB.can_forward!=2)||(rs==EX_DM.write_reg&&EX_DM.can_forward==0&&ID_EX.instruction!=0))&&rs!=0)
-                {
-                    ID_EX.stall=1;
-                    ID_EX.instruction=0;
+            if(((rs==DM_WB.write_reg&&DM_WB.can_forward==0)||(rs==EX_DM.write_reg&&ID_EX.instruction!=0))&&rs!=0)
+        {
+            ID_EX.stall=1;
+            ID_EX.instruction=0;
 
-                    break;
-                }
+            break;
+        }
 
-
-            if(rs==EX_DM.write_reg && EX_DM.can_forward==1&&rs!=0)
+             if(rs == DM_WB.write_reg && DM_WB.can_forward==1&&rs!=0)
             {
-                PCback = EX_DM.ALU_result;
+
+                PCback = DM_WB.ALU_result;
                 ID_EX.forward[0] = 1;
                 ID_EX.forward[1] = rs;
-                ID_EX.forward[2] = 0;
+                ID_EX.forward[2] = 1;
             }
             else
                 PCback = reg[rs];
+branch = 1;
             break;
         }
 
@@ -2443,7 +2443,8 @@ int ID()
         immediate = cut_immediate(IF_ID.instruction);
         rs = cut_rs(IF_ID.instruction);
         rt = cut_rt(IF_ID.instruction);
-        if(!((EX_DM.write_reg==DM_WB.write_reg)&&(EX_DM.can_forward==1)))
+
+
         if(((rs==DM_WB.write_reg&&DM_WB.can_forward==0)||(rs==EX_DM.write_reg&&ID_EX.instruction!=0))&&rs!=0)
         {
 
@@ -2452,7 +2453,7 @@ int ID()
 
             break;
         }
-        if(!((EX_DM.write_reg==DM_WB.write_reg)&&(EX_DM.can_forward==1)))
+
         if(((rt==DM_WB.write_reg&&DM_WB.can_forward==0)||(rt==EX_DM.write_reg&&ID_EX.instruction!=0))&&rt!=0)
         {
 
@@ -2545,7 +2546,7 @@ int ID()
         immediate = cut_immediate(IF_ID.instruction);
         rs = cut_rs(IF_ID.instruction);
         rt = cut_rt(IF_ID.instruction);
-        if(!((EX_DM.write_reg==DM_WB.write_reg)&&(EX_DM.can_forward==1)))
+
         if(((rs==DM_WB.write_reg&&DM_WB.can_forward==0)||(rs==EX_DM.write_reg&&ID_EX.instruction!=0))&&rs!=0)
         {
             ID_EX.stall=1;
@@ -2553,7 +2554,7 @@ int ID()
 
             break;
         }
-        if(!((EX_DM.write_reg==DM_WB.write_reg)&&(EX_DM.can_forward==1)))
+
         if(((rt==DM_WB.write_reg&&DM_WB.can_forward==0)||(rt==EX_DM.write_reg&&ID_EX.instruction!=0))&&rt!=0)
         {
             ID_EX.stall=1;
@@ -2562,8 +2563,7 @@ int ID()
             break;
         }
 
-        if(EX_DM.stall!=1)
-        {
+
             if(rs==DM_WB.write_reg && DM_WB.can_forward==1&&rs!=0)
             {
                 if(rt==DM_WB.write_reg && DM_WB.can_forward==1&&rt!=0)
@@ -2621,7 +2621,7 @@ int ID()
                 }
 
             }
-        }
+
 
 
 
@@ -2638,7 +2638,7 @@ int ID()
 
         immediate = cut_immediate(IF_ID.instruction);
         rs = cut_rs(IF_ID.instruction);
-        if(!((EX_DM.write_reg==DM_WB.write_reg)&&(EX_DM.can_forward==1)))
+
         if(((rs==DM_WB.write_reg&&DM_WB.can_forward==0)||(rs==EX_DM.write_reg&&ID_EX.instruction!=0))&&rs!=0)
         {
             ID_EX.stall=1;
@@ -2648,8 +2648,7 @@ int ID()
         }
 
 
-        if(EX_DM.stall!=1)
-        {
+
             if(rs == DM_WB.write_reg && DM_WB.can_forward==1&&rs!=0)
             {
                 if(DM_WB.ALU_result>0)
@@ -2671,7 +2670,7 @@ int ID()
 
                 }
             }
-        }
+
 
 
 
@@ -2843,6 +2842,7 @@ int IF(int flags)
         {
             if(ID_EX.forward[0]==1)
             {
+
                 fprintf(snapshot," fwd_EX-DM_rs_$%d",ID_EX.forward[1]);
             }
             else if(ID_EX.forward[0]==2)
