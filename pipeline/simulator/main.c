@@ -100,7 +100,7 @@ int main(void)
     int j=0;
     while(1)
     {
-        //    if(count>4)break;
+          //  if(count>12)break;
 
         errors[0]=0;
         errors[1]=0;

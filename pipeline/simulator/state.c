@@ -2816,6 +2816,9 @@ int IF(int flags)
     }
     else
     {
+        if(ID_EX.stall==1)
+            IF_ID.instruction=IF_ID.instruction;
+        else
             IF_ID.instruction=0;
 
         fprintf(snapshot,"PC: 0x%08X\n",tempPC);
@@ -2882,7 +2885,7 @@ int IF(int flags)
     fprintf(snapshot,"WB: %s",name);
     fprintf(snapshot,"\n");
     fprintf(snapshot,"\n");
-    if(branch == 1 )
+    if(branch == 1 && ID_EX.stall!=1)
     {
         IF_ID.instruction = 0;  ///flush
         branch =0;
@@ -2895,6 +2898,7 @@ int IF(int flags)
 
     if(op==0&&shamt==0&&rt==0&&rd==0&&funct==0&&(ID_EX.stall!=1))
         IF_ID.instruction=0;
+
     if(op==0x3F)
     {
         return 1;
