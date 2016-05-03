@@ -2825,9 +2825,9 @@ int IF(int flags)
     if(branch == 0&& ID_EX.stall==0)
         fprintf(snapshot,"IF: 0x00000000");
     else if(branch==1&&ID_EX.stall==0)
-        fprintf(snapshot,"IF: 0x%00000000 to_be_flushed");
+        fprintf(snapshot,"IF: 0x00000000 to_be_flushed");
     else
-        fprintf(snapshot,"IF: 0x%00000000 to_be_stalled");
+        fprintf(snapshot,"IF: 0x00000000 to_be_stalled");
 
     }
 
