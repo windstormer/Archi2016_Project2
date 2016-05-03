@@ -1125,6 +1125,7 @@ int EX()
         EX_DM.can_forward=0;
         EX_DM.ALU_result=temp;
         EX_DM.read_data2=ID_EX.read_data2;
+        EX_DM.write_reg=0;
         break;
     }
     case 0x29:	///sh
@@ -1137,6 +1138,7 @@ int EX()
         EX_DM.can_forward=0;
         EX_DM.ALU_result=temp;
         EX_DM.read_data2=ID_EX.read_data2;
+        EX_DM.write_reg=0;
         break;
     }
     case 0x28:	///sb
@@ -1149,6 +1151,7 @@ int EX()
         EX_DM.can_forward=0;
         EX_DM.ALU_result=temp;
         EX_DM.read_data2=ID_EX.read_data2;
+        EX_DM.write_reg=0;
         break;
     }
     case 0x0F:	///lui
