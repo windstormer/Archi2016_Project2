@@ -2798,21 +2798,28 @@ int IF(int flags)
             IF_ID.PC=tempPC;
 
         }
-
-
-    }
-    else
-    {
-        IF_ID.instruction=0;
-    }
-
-    fprintf(snapshot,"PC: 0x%08X\n",tempPC);
+ fprintf(snapshot,"PC: 0x%08X\n",tempPC);
     if(branch == 0&& ID_EX.stall==0)
         fprintf(snapshot,"IF: 0x%08X",iim[i]);
     else if(branch==1&&ID_EX.stall==0)
         fprintf(snapshot,"IF: 0x%08X to_be_flushed",iim[i]);
     else
         fprintf(snapshot,"IF: 0x%08X to_be_stalled",iim[i]);
+
+    }
+    else
+    {
+        IF_ID.instruction=0;
+         fprintf(snapshot,"PC: 0x%08X\n",tempPC);
+    if(branch == 0&& ID_EX.stall==0)
+        fprintf(snapshot,"IF: 0x00000000");
+    else if(branch==1&&ID_EX.stall==0)
+        fprintf(snapshot,"IF: 0x%00000000 to_be_flushed");
+    else
+        fprintf(snapshot,"IF: 0x%00000000 to_be_stalled");
+    }
+
+
     fprintf(snapshot,"\n");
     name = toname(show_IDi);
     fprintf(snapshot,"ID: %s",name);
