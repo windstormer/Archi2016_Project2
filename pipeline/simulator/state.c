@@ -444,6 +444,7 @@ int DM()
     int flags=0;
     if(EX_DM.instruction==0)
     {
+        DM_WB.instruction=EX_DM.instruction;
         DM_WB.ALU_result=0;
         DM_WB.can_forward=0;
         DM_WB.data=0;
@@ -855,6 +856,7 @@ int EX()
 
     if(ID_EX.instruction==0)
     {
+        EX_DM.instruction=ID_EX.instruction;
         EX_DM.ALU_result==0;
         EX_DM.read_data2=0;
         EX_DM.write_reg=0;
@@ -1285,6 +1287,7 @@ int ID()
 
     if(IF_ID.instruction==0)
     {
+        ID_EX.instruction=IF_ID.instruction;
         ID_EX.immediate_ext=0;
         ID_EX.read_data1=0;
         ID_EX.read_data2=0;
@@ -2801,6 +2804,7 @@ int IF(int flags)
             IF_ID.PC=tempPC;
 
         }
+
  fprintf(snapshot,"PC: 0x%08X\n",tempPC);
     if(branch == 0&& ID_EX.stall==0)
         fprintf(snapshot,"IF: 0x%08X",iim[i]);
@@ -2812,14 +2816,16 @@ int IF(int flags)
     }
     else
     {
-        IF_ID.instruction=0;
-         fprintf(snapshot,"PC: 0x%08X\n",tempPC);
+            IF_ID.instruction=0;
+
+        fprintf(snapshot,"PC: 0x%08X\n",tempPC);
     if(branch == 0&& ID_EX.stall==0)
         fprintf(snapshot,"IF: 0x00000000");
     else if(branch==1&&ID_EX.stall==0)
         fprintf(snapshot,"IF: 0x%00000000 to_be_flushed");
     else
         fprintf(snapshot,"IF: 0x%00000000 to_be_stalled");
+
     }
 
 
@@ -2868,8 +2874,6 @@ int IF(int flags)
         }
     }
 
-
-
     fprintf(snapshot,"\n");
     name = toname(show_DMi);
     fprintf(snapshot,"DM: %s",name);
@@ -2889,7 +2893,7 @@ int IF(int flags)
     rd = cut_rd(iim[i]);
     funct = cut_func(iim[i]);
 
-    if(op==0&&shamt==0&&rt==0&&rd==0&&funct==0)
+    if(op==0&&shamt==0&&rt==0&&rd==0&&funct==0&&(ID_EX.stall!=1))
         IF_ID.instruction=0;
     if(op==0x3F)
     {
