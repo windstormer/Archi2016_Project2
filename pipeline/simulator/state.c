@@ -1902,7 +1902,7 @@ int ID()
         {
             ID_EX.instruction = IF_ID.instruction;
             rs = cut_rs(IF_ID.instruction);
-            if(((rs==DM_WB.write_reg&&DM_WB.can_forward==0)||(rs==EX_DM.write_reg&&ID_EX.instruction!=0))&&rs!=0)
+            if(((rs==DM_WB.write_reg&&DM_WB.can_forward==0)||(rs==EX_DM.write_reg&&EX_DM.can_forward!=2&&ID_EX.instruction!=0))&&rs!=0)
         {
             ID_EX.stall=1;
             ID_EX.instruction=0;
@@ -2445,7 +2445,7 @@ branch = 1;
         rt = cut_rt(IF_ID.instruction);
 
 
-        if(((rs==DM_WB.write_reg&&DM_WB.can_forward==0)||(rs==EX_DM.write_reg&&ID_EX.instruction!=0))&&rs!=0)
+        if(((rs==DM_WB.write_reg&&DM_WB.can_forward==0)||(rs==EX_DM.write_reg&&EX_DM.can_forward!=2&&ID_EX.instruction!=0))&&rs!=0)
         {
 
             ID_EX.stall=1;
@@ -2454,7 +2454,7 @@ branch = 1;
             break;
         }
 
-        if(((rt==DM_WB.write_reg&&DM_WB.can_forward==0)||(rt==EX_DM.write_reg&&ID_EX.instruction!=0))&&rt!=0)
+        if(((rt==DM_WB.write_reg&&DM_WB.can_forward==0)||(rt==EX_DM.write_reg&&EX_DM.can_forward!=2&&ID_EX.instruction!=0))&&rt!=0)
         {
 
             ID_EX.stall=1;
@@ -2547,7 +2547,7 @@ branch = 1;
         rs = cut_rs(IF_ID.instruction);
         rt = cut_rt(IF_ID.instruction);
 
-        if(((rs==DM_WB.write_reg&&DM_WB.can_forward==0)||(rs==EX_DM.write_reg&&ID_EX.instruction!=0))&&rs!=0)
+        if(((rs==DM_WB.write_reg&&DM_WB.can_forward==0)||(rs==EX_DM.write_reg&&EX_DM.can_forward!=2&&ID_EX.instruction!=0))&&rs!=0)
         {
             ID_EX.stall=1;
             ID_EX.instruction=0;
@@ -2555,7 +2555,7 @@ branch = 1;
             break;
         }
 
-        if(((rt==DM_WB.write_reg&&DM_WB.can_forward==0)||(rt==EX_DM.write_reg&&ID_EX.instruction!=0))&&rt!=0)
+        if(((rt==DM_WB.write_reg&&DM_WB.can_forward==0)||(rt==EX_DM.write_reg&&EX_DM.can_forward!=2&&ID_EX.instruction!=0))&&rt!=0)
         {
             ID_EX.stall=1;
             ID_EX.instruction=0;
@@ -2639,7 +2639,7 @@ branch = 1;
         immediate = cut_immediate(IF_ID.instruction);
         rs = cut_rs(IF_ID.instruction);
 
-        if(((rs==DM_WB.write_reg&&DM_WB.can_forward==0)||(rs==EX_DM.write_reg&&ID_EX.instruction!=0))&&rs!=0)
+        if(((rs==DM_WB.write_reg&&DM_WB.can_forward==0)||(rs==EX_DM.write_reg&&EX_DM.can_forward!=2&&ID_EX.instruction!=0))&&rs!=0)
         {
             ID_EX.stall=1;
             ID_EX.instruction=0;
