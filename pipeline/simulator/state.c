@@ -2568,7 +2568,7 @@ branch = 1;
             {
                 if(rt==DM_WB.write_reg && DM_WB.can_forward==1&&rt!=0)
                 {
-                    if(DM_WB.ALU_result!=reg[rs])
+                    if(DM_WB.ALU_result!=DM_WB.ALU_result)
                     {
                         branch = 1;
                         PCback = IF_ID.PC + 4 + immediate*4;
